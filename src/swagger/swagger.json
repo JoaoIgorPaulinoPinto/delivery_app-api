@@ -1,0 +1,132 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"ProdutoResponseDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"nome": {
+						"type": "string"
+					},
+					"preco": {
+						"type": "number",
+						"format": "double"
+					},
+					"descricao": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"nome",
+					"preco",
+					"descricao"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "restaurente-api",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/produtos": {
+			"get": {
+				"operationId": "GetProdutos",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ProdutoResponseDTO"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retorna todos os produtos",
+				"tags": [
+					"Produtos"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/produtos/{id}": {
+			"get": {
+				"operationId": "GetProdutoById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ProdutoResponseDTO"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Produto não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"description": "Retorna um produto específico pelo ID",
+				"tags": [
+					"Produtos"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

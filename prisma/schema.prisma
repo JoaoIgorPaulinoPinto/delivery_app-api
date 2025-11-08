@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model cliente {
+  id              Int               @id @default(autoincrement())
+  cnpj            String?           @db.VarChar(20)
+  nome            String?           @db.VarChar(100)
+  endereco        String?           @db.VarChar(150)
+  responsavel     String?           @db.VarChar(100)
+  contrato        contrato[]
+  estabelecimento estabelecimento[]
+}
+
+model contrato {
+  id        Int      @id @default(autoincrement())
+  modelo    String?  @db.VarChar(50)
+  tipo      String?  @db.VarChar(50)
+  definicao String?  @db.Text
+  idCliente Int?
+  cliente   cliente? @relation(fields: [idCliente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contrato_ibfk_1")
+
+  @@index([idCliente], map: "idCliente")
+}
+
+model entregador {
+  id                Int              @id @default(autoincrement())
+  nome              String?          @db.VarChar(100)
+  cpf               String?          @db.VarChar(14)
+  veiculo           String?          @db.VarChar(50)
+  idEstabelecimento Int?
+  estabelecimento   estabelecimento? @relation(fields: [idEstabelecimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "entregador_ibfk_1")
+
+  @@index([idEstabelecimento], map: "idEstabelecimento")
+}
+
+model estabelecimento {
+  id         Int          @id @default(autoincrement())
+  endereco   String?      @db.VarChar(150)
+  idCliente  Int?
+  entregador entregador[]
+  cliente    cliente?     @relation(fields: [idCliente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "estabelecimento_ibfk_1")
+  pedido     pedido[]
+  produto    produto[]
+
+  @@index([idCliente], map: "idCliente")
+}
+
+model pedido {
+  id                Int              @id @default(autoincrement())
+  feitoEm           DateTime?        @db.DateTime(0)
+  status            String?          @db.VarChar(30)
+  usuario           String?          @db.VarChar(100)
+  endereco          String?          @db.VarChar(150)
+  metodoPagamento   String?          @db.VarChar(50)
+  finalizadoEm      DateTime?        @db.DateTime(0)
+  idEstabelecimento Int?
+  estabelecimento   estabelecimento? @relation(fields: [idEstabelecimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pedido_ibfk_1")
+  produtopedido     produtopedido[]
+
+  @@index([idEstabelecimento], map: "idEstabelecimento")
+}
+
+model produto {
+  id                Int              @id @default(autoincrement())
+  nome              String?          @db.VarChar(100)
+  preco             Decimal?         @db.Decimal(10, 2)
+  idEstabelecimento Int?
+  descricao         String?          @db.VarChar(100)
+  estabelecimento   estabelecimento? @relation(fields: [idEstabelecimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "produto_ibfk_1")
+  produtopedido     produtopedido[]
+
+  @@index([idEstabelecimento], map: "idEstabelecimento")
+}
+
+model produtopedido {
+  id         Int      @id @default(autoincrement())
+  idProduto  Int?
+  idPedido   Int?
+  quantidade Int?
+  observacao String?  @db.Text
+  produto    produto? @relation(fields: [idProduto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "produtopedido_ibfk_1")
+  pedido     pedido?  @relation(fields: [idPedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "produtopedido_ibfk_2")
+
+  @@index([idPedido], map: "idPedido")
+  @@index([idProduto], map: "idProduto")
+}

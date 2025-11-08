@@ -1,0 +1,353 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"ProdutoResponseDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"nome": {
+						"type": "string"
+					},
+					"preco": {
+						"type": "number",
+						"format": "double"
+					},
+					"descricao": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"nome",
+					"preco",
+					"descricao"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PedidoProdutoResponseDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"produtoId": {
+						"type": "number",
+						"format": "double"
+					},
+					"quantidade": {
+						"type": "number",
+						"format": "double"
+					},
+					"obs": {
+						"type": "string"
+					},
+					"produto": {
+						"$ref": "#/components/schemas/ProdutoResponseDTO"
+					}
+				},
+				"required": [
+					"id",
+					"produtoId",
+					"quantidade",
+					"obs"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PedidoResponseDTO": {
+				"properties": {
+					"endereco": {
+						"type": "string"
+					},
+					"criadoEm": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"status": {
+						"type": "string"
+					},
+					"metodoPagamento": {
+						"type": "string"
+					},
+					"pedidoProdutos": {
+						"items": {
+							"$ref": "#/components/schemas/PedidoProdutoResponseDTO"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"endereco",
+					"criadoEm",
+					"status",
+					"metodoPagamento",
+					"pedidoProdutos"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PedidoProdutoCreateDTO": {
+				"properties": {
+					"produtoId": {
+						"type": "number",
+						"format": "double"
+					},
+					"quantidade": {
+						"type": "number",
+						"format": "double"
+					},
+					"obs": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"produtoId",
+					"quantidade",
+					"obs"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PedidoCreateDTO": {
+				"properties": {
+					"metodoPagamento": {
+						"type": "string"
+					},
+					"idEstabelecimento": {
+						"type": "number",
+						"format": "double"
+					},
+					"endereco": {
+						"type": "string"
+					},
+					"usuario": {
+						"type": "string"
+					},
+					"pedidoProdutos": {
+						"items": {
+							"$ref": "#/components/schemas/PedidoProdutoCreateDTO"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"metodoPagamento",
+					"idEstabelecimento",
+					"endereco",
+					"pedidoProdutos"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "restaurente-api",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/produtos": {
+			"get": {
+				"operationId": "GetProdutos",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ProdutoResponseDTO"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retorna todos os produtos",
+				"tags": [
+					"Produtos"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/produtos/{id}": {
+			"get": {
+				"operationId": "GetProdutoById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ProdutoResponseDTO"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Produto não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"description": "Retorna um produto específico pelo ID",
+				"tags": [
+					"Produtos"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/pedidos": {
+			"get": {
+				"operationId": "GetPedidos",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/PedidoResponseDTO"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Pedidos"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreatePedido",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PedidoResponseDTO"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Pedidos"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PedidoCreateDTO"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/pedidos/{id}": {
+			"get": {
+				"operationId": "GetPedidosById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/PedidoResponseDTO"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Pedido não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Pedidos"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}
