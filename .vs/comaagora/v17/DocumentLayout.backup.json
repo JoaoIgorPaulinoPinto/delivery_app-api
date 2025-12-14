@@ -1,122 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Joao\\source\\repos\\comaagora\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|c:\\users\\joao\\source\\repos\\comaagora\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|c:\\users\\joao\\source\\repos\\comaagora\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|c:\\users\\joao\\source\\repos\\comaagora\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|c:\\users\\joao\\source\\repos\\comaagora\\comaagora.csproj.backup.tmp||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|solutionrelative:comaagora.csproj.backup.tmp||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|c:\\users\\joao\\source\\repos\\comaagora\\comaagora.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|solutionrelative:comaagora.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|c:\\users\\joao\\source\\repos\\comaagora\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D59F814-885D-4E6F-AAC2-F792A66A9ACC}|comaagora.csproj|solutionrelative:controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 2,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\Joao\\source\\repos\\comaagora\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\Users\\Joao\\source\\repos\\comaagora\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-12-12T00:48:45.264Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "comaagora.csproj.Backup.tmp",
-              "DocumentMoniker": "C:\\Users\\Joao\\source\\repos\\comaagora\\comaagora.csproj.Backup.tmp",
-              "RelativeDocumentMoniker": "comaagora.csproj.Backup.tmp",
-              "ToolTip": "C:\\Users\\Joao\\source\\repos\\comaagora\\comaagora.csproj.Backup.tmp",
-              "RelativeToolTip": "comaagora.csproj.Backup.tmp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-12-12T00:39:57.801Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\Joao\\source\\repos\\comaagora\\Data\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "Data\\AppDbContext.cs",
-              "ToolTip": "C:\\Users\\Joao\\source\\repos\\comaagora\\Data\\AppDbContext.cs",
-              "RelativeToolTip": "Data\\AppDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-12T00:39:53.954Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "comaagora.csproj",
-              "DocumentMoniker": "C:\\Users\\Joao\\source\\repos\\comaagora\\comaagora.csproj",
-              "RelativeDocumentMoniker": "comaagora.csproj",
-              "ToolTip": "C:\\Users\\Joao\\source\\repos\\comaagora\\comaagora.csproj",
-              "RelativeToolTip": "comaagora.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-12-12T00:36:16.87Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "WeatherForecastController.cs",
-              "DocumentMoniker": "C:\\Users\\Joao\\source\\repos\\comaagora\\Controllers\\WeatherForecastController.cs",
-              "RelativeDocumentMoniker": "Controllers\\WeatherForecastController.cs",
-              "ToolTip": "C:\\Users\\Joao\\source\\repos\\comaagora\\Controllers\\WeatherForecastController.cs",
-              "RelativeToolTip": "Controllers\\WeatherForecastController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAmwBkAAABKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-12T00:33:42.495Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Joao\\source\\repos\\comaagora\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\Joao\\source\\repos\\comaagora\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-12T00:28:40.833Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }

@@ -9,8 +9,6 @@ namespace comaagora.Models
         public int EnderecoId { get; set; }
         public string? Observacao { get; set; }
         public int UsuarioId { get; set; }
-
-
         public ICollection<ProdutoPedido> Produtos{ get; set; } = new List<ProdutoPedido>();
         public Estabelecimento? Estabelecimento { get; set; }
         public Endereco? Endereco { get; set; }

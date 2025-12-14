@@ -37,6 +37,9 @@ namespace comaagora.Models
         // Relacionamentos
         public ICollection<Status> Status { get; set; } = new List<Status>();
         public ICollection<Produto> Produtos { get; set; } = new List<Produto>();
+        public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+        public ICollection<Endereco> Enderecos { get; set; } = new List<Endereco>();
+        public ICollection<ProdutoPedido> ProdutosPedido { get; set; } = new List<ProdutoPedido>();
         public ICollection<EstabelecimentoCategoria> Categoria { get; set; } = new List<EstabelecimentoCategoria>();
 
     }
