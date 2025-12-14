@@ -14,9 +14,5 @@ namespace comaagora.Models
         public Estabelecimento? estabelecimento { get; set; }
         public ICollection<Estabelecimento> Estabelecimentos { get; set; }  = new List<Estabelecimento>();
 
-
-
-
-
     }
 }

@@ -13,6 +13,7 @@ namespace comaagora.Models
         public Estabelecimento? Estabelecimento { get; set; }
         public Endereco? Endereco { get; set; }
         public Usuario? Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
 
     }
 }

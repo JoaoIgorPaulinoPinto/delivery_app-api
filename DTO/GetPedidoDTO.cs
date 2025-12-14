@@ -4,8 +4,8 @@ namespace comaagora.DTO
 {
     public class GetPedidoDTO
     {
-        public int EstabelecimentoId {  get; set; }
-        public List<ProdutoPedido>? produtos { get; set; }
-        public Usuario? usuario { get; set; }
+        public string? Estabelecimento {  get; set; }
+        public List<GetProdutoPedidoDTO>? produtos { get; set; }
+        public GetUsuarioDTO? usuario { get; set; }
     }
 }

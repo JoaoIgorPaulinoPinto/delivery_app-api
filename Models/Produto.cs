@@ -17,9 +17,5 @@ namespace comaagora.Models
         public int StatusId { get; set; }
         public Status Status { get; set; } = null!;
 
-
-
-
-
     }
 }
