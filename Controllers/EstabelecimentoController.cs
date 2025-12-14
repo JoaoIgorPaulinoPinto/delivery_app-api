@@ -15,7 +15,7 @@ namespace comaagora.Controllers
             _estabelecimentoService = estabelecimentoService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetBySlug([FromHeader]string slug)
+        public async Task<IActionResult> GetBySlug([FromQuery]string slug)
         {
             return Ok(await _estabelecimentoService.GetIdBySlug(slug));
         }

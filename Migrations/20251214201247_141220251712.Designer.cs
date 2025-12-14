@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using comaagora.Data;
 
@@ -11,9 +12,11 @@ using comaagora.Data;
 namespace comaagora.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251214201247_141220251712")]
+    partial class _141220251712
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,6 +76,8 @@ namespace comaagora.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EstabelecimentoId");
+
                     b.ToTable("Enderecos");
                 });
 
@@ -102,6 +107,9 @@ namespace comaagora.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<int>("EnderecoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EnderecoId1")
                         .HasColumnType("int");
 
                     b.Property<int>("EstabelecimentoStatusId")
@@ -147,8 +155,7 @@ namespace comaagora.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EnderecoId")
-                        .IsUnique();
+                    b.HasIndex("EnderecoId1");
 
                     b.HasIndex("EstabelecimentoStatusId");
 
@@ -472,11 +479,20 @@ namespace comaagora.Migrations
                     b.ToTable("Usuarios");
                 });
 
+            modelBuilder.Entity("comaagora.Models.Endereco", b =>
+                {
+                    b.HasOne("comaagora.Models.Estabelecimento", null)
+                        .WithMany("Enderecos")
+                        .HasForeignKey("EstabelecimentoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("comaagora.Models.Estabelecimento", b =>
                 {
                     b.HasOne("comaagora.Models.Endereco", "Endereco")
-                        .WithOne("Estabelecimento")
-                        .HasForeignKey("comaagora.Models.Estabelecimento", "EnderecoId")
+                        .WithMany()
+                        .HasForeignKey("EnderecoId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -636,15 +652,11 @@ namespace comaagora.Migrations
                     b.Navigation("Estabelecimento");
                 });
 
-            modelBuilder.Entity("comaagora.Models.Endereco", b =>
-                {
-                    b.Navigation("Estabelecimento")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("comaagora.Models.Estabelecimento", b =>
                 {
                     b.Navigation("Categoria");
+
+                    b.Navigation("Enderecos");
 
                     b.Navigation("Pedidos");
 

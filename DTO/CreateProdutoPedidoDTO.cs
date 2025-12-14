@@ -4,7 +4,7 @@ namespace comaagora.DTO
 {
     public class CreateProdutoPedidoDTO
     {
-        public int ProdutoId { get; set; }
-        public int Quantidade { get; set; }
+        public required int ProdutoId { get; set; }
+        public required int Quantidade { get; set; }
     }
 }

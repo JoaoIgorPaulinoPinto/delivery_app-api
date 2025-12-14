@@ -6,13 +6,12 @@ namespace comaagora.Models
     {
 
         public int Id{ get; set; }
-        public string? nome { get; set; }
-        public Status? status { get; set; }
-        public int StatusId { get; set; }
-
-        public int EstabelecimentoId { get; set; }
-        public Estabelecimento? estabelecimento { get; set; }
-        public ICollection<Estabelecimento> Estabelecimentos { get; set; }  = new List<Estabelecimento>();
+        public required string? nome { get; set; }
+        public required Status? status { get; set; }
+        public required int StatusId { get; set; }
+        public required int EstabelecimentoId { get; set; }
+        public required Estabelecimento? estabelecimento { get; set; }
+        public required ICollection<Estabelecimento> Estabelecimentos { get; set; }  = new List<Estabelecimento>();
 
     }
 }

@@ -35,6 +35,18 @@ namespace comaagora.Data
                         .ValueGeneratedOnAddOrUpdate();
                 }
             }
+            modelBuilder.Entity<Estabelecimento>()
+            .HasOne(e => e.Endereco)
+            .WithOne()
+            .HasForeignKey<Estabelecimento>(e => e.EnderecoId)
+            .OnDelete(DeleteBehavior.Cascade); 
+            modelBuilder.Entity<Estabelecimento>()
+            .HasOne(e => e.Endereco)
+            .WithOne(e => e.Estabelecimento)
+            .HasForeignKey<Estabelecimento>(e => e.EnderecoId)
+             .OnDelete(DeleteBehavior.Cascade);
+
+
         }
 
     }

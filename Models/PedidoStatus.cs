@@ -3,7 +3,7 @@
     public class PedidoStatus
     {
         public int Id { get; set; }
-        public string? situacao { get; set; } = "Em processamento";
+        public required string situacao { get; set; }
         public ICollection<Pedido> Peiddos { get; set; } = new List<Pedido>();
     }
 }

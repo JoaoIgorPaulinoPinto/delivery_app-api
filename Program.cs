@@ -1,4 +1,5 @@
-using comaagora.Data;
+﻿using comaagora.Data;
+using comaagora.Repositories;
 using comaagora.Services;
 using comaagora.Services.Pedido;
 using Microsoft.EntityFrameworkCore;
@@ -23,11 +24,17 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyMethod();
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader(); // 🔥 importante
     });
 });
+
+
+builder.Services.AddScoped<ProdutoRepository>();
+builder.Services.AddScoped<PedidoRepository>();
+
 
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();

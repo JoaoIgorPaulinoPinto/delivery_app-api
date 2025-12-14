@@ -7,12 +7,9 @@ namespace comaagora.Models
     {
         [Key]
         public int Id { get; set; }
-
-        public string? nome { get; set; }
-        public Status? status  { get; set; }
-
-        public int EstabelecimentoId  { get; set; }
-
+        public required string? nome { get; set; }
+        public required Status? status  { get; set; }
+        public required int EstabelecimentoId  { get; set; }
 
     }
 }

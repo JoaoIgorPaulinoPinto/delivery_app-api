@@ -2,7 +2,7 @@
 {
     public class GetUsuarioDTO
     {
-        public string? nome { get; set; }
-        public string? telefone {  get; set; }
+        public required string nome { get; set; }
+        public required string telefone {  get; set; }
     }
 }

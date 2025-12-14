@@ -4,12 +4,13 @@ namespace comaagora.DTO
 {
     public class ProdutoDTO
     {
-        public int Id { get; set; }
-        public string? Nome { get; set; } = "";
-        public string? Descricao { get; set; } = "";
-        public decimal? Preco { get; set; } = 0;
-        public string? Categoria { get; set; } = "";
-        public string? Status { get; set; } = "";
-        public string? estabelecimento { get; set; } = "";
+        public required int Id { get; set; }
+        public required string Nome { get; set; } = "";
+        public required string Descricao { get; set; } = "";
+        public required string ImgUrl { get; set; } = "";
+        public required decimal Preco { get; set; } = 0;
+        public required string Categoria { get; set; } = "";
+        public required string Status { get; set; } = "";
+        public required string estabelecimento { get; set; } = "";
     }
 }

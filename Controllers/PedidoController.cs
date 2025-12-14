@@ -31,8 +31,14 @@ public class PedidoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetById([FromQuery] int estabelecimentoId, int id)
+    public async Task<IActionResult> GetById(int id , [FromQuery] int estabelecimentoId)
     {
-        return Ok(await _pedidoService.GetPedidoById(estabelecimentoId, id));
+        try
+        {
+            return Ok(await _pedidoService.GetPedidoById(estabelecimentoId, id));
+        }
+        catch (Exception ex) {
+            return BadRequest(ex.Message);
+        }
     }
 }

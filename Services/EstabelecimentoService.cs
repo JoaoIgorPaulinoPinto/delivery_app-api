@@ -19,7 +19,5 @@ namespace comaagora.Services
              .Select(e => (int?)e.Id)
              .FirstOrDefaultAsync();
         }
-
-
     }
 }

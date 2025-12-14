@@ -4,8 +4,8 @@ namespace comaagora.DTO
 {
     public class GetProdutoPedidoDTO
     {
-        public string? Produto { get; set; }
-        public int Quantidade { get; set; }
-        public decimal Preco { get; set; }
+        public required string Produto { get; set; }
+        public required int Quantidade { get; set; }
+        public required decimal Preco { get; set; }
     }
 }

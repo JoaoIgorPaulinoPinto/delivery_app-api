@@ -18,12 +18,26 @@ namespace comaagora.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromHeader] int estabelecimentoId)
         {
-            return Ok(await _produtoService.GetAll( estabelecimentoId));
+            try
+            {
+                return Ok(await _produtoService.GetAll(estabelecimentoId));
+
+            }
+            catch (Exception ex) { 
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromHeader]int estabelecimentoId, int id)
         {
-            return Ok(await _produtoService.GetByID(id, estabelecimentoId));
+            try
+            {
+                return Ok(await _produtoService.GetByID(id, estabelecimentoId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

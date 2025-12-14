@@ -5,12 +5,12 @@ namespace comaagora.Models
     public class ProdutoPedido : BaseEntity
     {
         public int Id {get;set;}
-        public int EstabelecimentoId { get; set; }
-        public int PedidoId { get; set; }
-        public int ProdutoId { get; set; }
-        public int Quantidade { get; set; }
-        public Produto? Produto { get; set; }
-        public Pedido? Pedido { get; set; }
-        public Estabelecimento? Estabelecimento { get; set; }
+        public required int EstabelecimentoId { get; set; }
+        public required int PedidoId { get; set; }
+        public required int ProdutoId { get; set; }
+        public required int Quantidade { get; set; }
+        public required Produto Produto { get; set; }
+        public required Pedido Pedido { get; set; } 
+        public  Estabelecimento? Estabelecimento { get; set; }
     }
 }

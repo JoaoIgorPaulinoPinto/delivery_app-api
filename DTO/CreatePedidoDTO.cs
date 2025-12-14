@@ -4,9 +4,9 @@ namespace comaagora.DTO
 {
         public class CreatePedidoDTO
         {
-            public List<CreateProdutoPedidoDTO> Produtos { get; set; } = new List<CreateProdutoPedidoDTO>();
-            public EnderecoCreateDTO Endereco { get; set; } = new EnderecoCreateDTO();
-            public string Observacao { get; set; } = "";
-            public UsuarioCreateDTO  Usuario { get; set; } = new ();
+            public required List<CreateProdutoPedidoDTO> Produtos { get; set; } 
+            public EnderecoCreateDTO? Endereco { get; set; } 
+            public required string Observacao { get; set; } = "";
+            public required UsuarioCreateDTO Usuario { get; set; }
         }
 }
