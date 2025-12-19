@@ -69,6 +69,7 @@ namespace comaagora.Services.Pedido
             {
                 UsuarioId = usuario.Id,
                 EstabelecimentoId = estabelecimentoId,
+                MetodoPagamentoId = dto.MetodoPagamentoId,
                 EnderecoId = endereco.Id,
                 Observacao = dto.Observacao,
             };

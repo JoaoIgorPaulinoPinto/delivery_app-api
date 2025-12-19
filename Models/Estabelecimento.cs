@@ -40,6 +40,7 @@ namespace comaagora.Models
         public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
         public ICollection<ProdutoPedido> ProdutosPedido { get; set; } = new List<ProdutoPedido>();
         public ICollection<EstabelecimentoCategoria> Categoria { get; set; } = new List<EstabelecimentoCategoria>();
+        public ICollection<MetodoPagamento> MetodosPagamento { get; set; } = new List<MetodoPagamento>();
 
     }
 }

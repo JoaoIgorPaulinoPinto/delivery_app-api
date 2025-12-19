@@ -9,10 +9,12 @@ namespace comaagora.Models
         public required int EnderecoId { get; set; }
         public required string Observacao { get; set; }
         public required int UsuarioId { get; set; }
-        public  Estabelecimento? Estabelecimento { get; set; }
+        public int? MetodoPagamentoId { get; set; }   
+        public  Estabelecimento? Estabelecimento { get; set; }      
         public Endereco? Endereco { get; set; }
         public  Usuario? Usuario { get; set; }
         public  ICollection<ProdutoPedido> Produtos { get; set; } = new List<ProdutoPedido>();
-
+        public MetodoPagamento? MetodoPagamento { get; set; }
+            
     }
 }

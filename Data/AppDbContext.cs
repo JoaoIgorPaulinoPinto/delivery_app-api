@@ -17,6 +17,7 @@ namespace comaagora.Data
         public DbSet<ProdutoPedido> ProdutoPedidos {  get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }
+        public DbSet<MetodoPagamento> MetodoPagamento { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,8 +45,12 @@ namespace comaagora.Data
             .HasOne(e => e.Endereco)
             .WithOne(e => e.Estabelecimento)
             .HasForeignKey<Estabelecimento>(e => e.EnderecoId)
-             .OnDelete(DeleteBehavior.Cascade);
-
+            .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Pedido>()
+            .HasOne(p => p.MetodoPagamento)
+            .WithMany(mp => mp.Pedidos)
+            .HasForeignKey(p => p.MetodoPagamentoId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         }
 
