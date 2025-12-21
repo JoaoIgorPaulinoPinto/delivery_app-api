@@ -1,50 +1,74 @@
-# 🚚 Delivery App API
+# Delivery App API
 
 ![Status](https://img.shields.io/badge/Status-In%20Development-yellow)
-![Language](https://img.shields.io/badge/Language-JavaScript-blue)
-![Framework](https://img.shields.io/badge/Framework-Node.js-green)
+![Platform](https://img.shields.io/badge/Platform-.NET-blue)
+![Framework](https://img.shields.io/badge/Framework-ASP.NET%20Web%20API-purple)
 
 ---
 
-## 📦 Sobre o Projeto
+## Sobre o Projeto
 
-Este é o backend da API para um aplicativo de delivery.  
-O objetivo é fornecer endpoints REST para gerenciar entregas, usuários, itens e pedidos.
+Este projeto é uma **API REST desenvolvida em ASP.NET Web API**, utilizada como backend para um aplicativo de delivery.
 
----
-
-## 🧠 Funcionalidades
-
-- 📍 Cadastro e login de usuários
-- 🧑‍🍳 Gestão de estabelecimentos
-- 🛍️ Criação e listagem de produtos
-- 📦 Criação, atualização e visualização de pedidos
-- 🔐 Autenticação e autorização de rotas
-- 📊 Documentação interativa (ex: Swagger)
+A API é responsável por gerenciar usuários, estabelecimentos, produtos e pedidos, fornecendo endpoints seguros para consumo por aplicações frontend ou mobile.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Funcionalidades
 
-- **Node.js**
-- **Express**
-- **JWT para autenticação**
-- **Sequelize / ORM**
-- **Banco de dados (MySQL/PostgreSQL/SQLite — conforme configuração)**
+- Cadastro e autenticação de usuários
+- Gerenciamento de estabelecimentos
+- Cadastro e listagem de produtos
+- Criação e acompanhamento de pedidos
+- Controle de status do pedido
+- Autenticação e autorização via token
+- Integração com banco de dados
 
 ---
 
-## 🚀 Como Rodar Localmente
+## Tecnologias Utilizadas
 
-### 📌 Requisitos
+- ASP.NET Web API
+- C#
+- Entity Framework
+- Banco de dados relacional
+- JWT para autenticação
+- Swagger (documentação da API)
 
-- Node.js (v14+)
-- NPM ou Yarn
+---
+
+## Como Executar o Projeto
+
+### Requisitos
+
+- .NET SDK instalado
 - Banco de dados configurado
+- Visual Studio ou VS Code
 
-### 🔹 Instalar Dependências
+### Executar a API
 
 ```bash
-npm install
-# ou
-yarn install
+dotnet restore
+dotnet run
+```
+
+#delivery_app-api/
+├── Controllers/        # Endpoints da API
+├── Models/             # Entidades do domínio
+├── DTOs/               # Objetos de transferência
+├── Services/           # Regras de negócio
+├── Data/               # Contexto e migrations
+├── Program.cs
+└── README.md
+###Autor
+#João Igor Paulino Pinto
+GitHub: https://github.com/JoaoIgorPaulinoPinto
+
+###Licença
+
+#Copyright © 2025 João Igor Paulino Pinto
+
+#Este projeto possui licença privada.
+
+O código-fonte está disponível apenas para visualização.
+É proibido copiar, modificar, distribuir ou utilizar este projeto, total ou parcialmente, sem autorização prévia do autor.
