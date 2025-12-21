@@ -60,15 +60,15 @@ dotnet run
 ├── Data/               # Contexto e migrations
 ├── Program.cs
 └── README.md
-###Autor
-#João Igor Paulino Pinto
+### Autor
+# João Igor Paulino Pinto
 GitHub: https://github.com/JoaoIgorPaulinoPinto
 
-###Licença
+### Licença
 
-#Copyright © 2025 João Igor Paulino Pinto
+# Copyright © 2025 João Igor Paulino Pinto
 
-#Este projeto possui licença privada.
+# Este projeto possui licença privada.
 
 O código-fonte está disponível apenas para visualização.
 É proibido copiar, modificar, distribuir ou utilizar este projeto, total ou parcialmente, sem autorização prévia do autor.
