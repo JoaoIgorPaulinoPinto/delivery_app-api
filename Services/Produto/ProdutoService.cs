@@ -2,7 +2,7 @@
 using comaagora.Models;
 using comaagora.Repositories;
 
-namespace comaagora.Services
+namespace comaagora.Services.Produto
 {
     public class ProdutoService : IProdutoService
     {

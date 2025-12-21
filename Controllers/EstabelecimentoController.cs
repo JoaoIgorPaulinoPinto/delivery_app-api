@@ -1,4 +1,4 @@
-﻿using comaagora.Services;
+﻿using comaagora.Services.Estabelecimento;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,9 +15,9 @@ namespace comaagora.Controllers
             _estabelecimentoService = estabelecimentoService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetBySlug([FromQuery]string slug)
+        public async Task<IActionResult> GetBySlug([FromQuery] string slug)
         {
-            return Ok(await _estabelecimentoService.GetIdBySlug(slug));
+            return Ok(await _estabelecimentoService.GetBySlug(slug));
         }
     }
 }

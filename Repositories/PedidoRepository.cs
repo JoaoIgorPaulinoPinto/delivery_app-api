@@ -64,5 +64,18 @@ namespace comaagora.Repositories
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
         }
+        public async Task<List<Pedido>> GetPedidosByClientKey(string clientKey, int estId)
+        {
+            return await _context.Pedidos
+                .Include(p => p.Estabelecimento) // OBRIGATÓRIO
+                .Include(p => p.Usuario)         // OBRIGATÓRIO
+                .Include(p => p.Endereco)        // OBRIGATÓRIO
+                .Include(p => p.Produtos)        // OBRIGATÓRIO
+                    .ThenInclude(pp => pp.Produto)
+                .Where(p => p.Usuario.clientKey == clientKey && p.EstabelecimentoId == estId)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+        }
+
     }
 }

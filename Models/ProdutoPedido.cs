@@ -9,8 +9,8 @@ namespace comaagora.Models
         public required int PedidoId { get; set; }
         public required int ProdutoId { get; set; }
         public required int Quantidade { get; set; }
-        public required Produto Produto { get; set; }
-        public required Pedido Pedido { get; set; } 
+        public  Produto? Produto { get; set; }
+        public  Pedido? Pedido { get; set; } 
         public  Estabelecimento? Estabelecimento { get; set; }
     }
 }

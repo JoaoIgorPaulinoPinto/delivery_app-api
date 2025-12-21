@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using comaagora.Data;
 
@@ -11,9 +12,11 @@ using comaagora.Data;
 namespace comaagora.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251221133301_AddClientKeyAndRelations")]
+    partial class AddClientKeyAndRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,14 +284,11 @@ namespace comaagora.Migrations
                     b.Property<int>("EstabelecimentoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MetodoPagamentoId")
+                    b.Property<int?>("MetodoPagamentoId")
                         .HasColumnType("int");
 
                     b.Property<string>("Observacao")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Status")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -583,8 +583,7 @@ namespace comaagora.Migrations
                     b.HasOne("comaagora.Models.MetodoPagamento", "MetodoPagamento")
                         .WithMany("Pedidos")
                         .HasForeignKey("MetodoPagamentoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("comaagora.Models.Usuario", "Usuario")
                         .WithMany()

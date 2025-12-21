@@ -4,7 +4,7 @@ namespace comaagora.Services.Pedido
 {
     public interface IPedidoService
     {
-        public Task<string> CreatePedido(int esabelecimentoId, CreatePedidoDTO dto);
-        public Task<GetPedidoDTO> GetPedidoById(int estabelecimentoId,int id);
+        public Task<GetPedidoDTO> CreatePedido(string? clientKey, int esabelecimentoId, CreatePedidoDTO dto);
+        public Task<List<GetPedidoDTO>> GetPedidosByClientKey(string clientKey, int estabelecimentoId);
     }
 }

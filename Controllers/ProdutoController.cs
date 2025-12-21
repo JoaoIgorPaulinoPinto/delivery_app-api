@@ -1,6 +1,6 @@
 ﻿using comaagora.Data;
 using comaagora.Models;
-using comaagora.Services;
+using comaagora.Services.Produto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace comaagora.Controllers

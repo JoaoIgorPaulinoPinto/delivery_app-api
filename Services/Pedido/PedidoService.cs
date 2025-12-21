@@ -6,126 +6,167 @@ namespace comaagora.Services.Pedido
 {
     public class PedidoService : IPedidoService
     {
-        private readonly PedidoRepository _repository;
+        private readonly PedidoRepository _pedidoRepo;
+        private readonly UsuarioRepository _usuarioRepo;
 
-        public PedidoService(PedidoRepository repository)
+        public PedidoService(UsuarioRepository usuarioRepository, PedidoRepository pedidoRepository)
         {
-            _repository = repository;
+            _pedidoRepo = pedidoRepository;
+            _usuarioRepo = usuarioRepository;
         }
 
-        public async Task<string> CreatePedido(int estabelecimentoId, CreatePedidoDTO dto)
+        public async Task<GetPedidoDTO> CreatePedido(string? clientKey, int estabelecimentoId, CreatePedidoDTO dto)
         {
-            // 1️⃣ Validação básica
-            if (dto == null)
-                throw new ArgumentNullException(nameof(dto), "Dados do pedido não podem ser nulos.");
+            // 1️⃣ Validações básicas
+            if (dto == null) throw new ArgumentNullException(nameof(dto));
+            if (dto.Produtos == null || !dto.Produtos.Any()) throw new ArgumentException("O pedido deve conter produtos.");
 
-            if (dto.Produtos == null || !dto.Produtos.Any())
-                throw new ArgumentException("O pedido deve conter pelo menos um produto.");
+            clientKey = clientKey?.Trim().ToLower();
 
-            if (string.IsNullOrWhiteSpace(dto.Usuario?.Nome) || string.IsNullOrWhiteSpace(dto.Usuario?.Telefone))
-                throw new ArgumentException("Nome e telefone do usuário são obrigatórios.");
+            // 2️⃣ Buscar Estabelecimento (com Taxa de Entrega)
+            var estabelecimento = await _pedidoRepo.GetEstabelecimentoByIdAsync(estabelecimentoId)
+                ?? throw new KeyNotFoundException("Estabelecimento não encontrado.");
 
-            if (dto.Endereco == null 
-                || string.IsNullOrWhiteSpace(dto.Endereco.Rua)
-                || string.IsNullOrWhiteSpace(dto.Endereco.Bairro)
-                || string.IsNullOrWhiteSpace(dto.Endereco.Cidade))
-            {
-                throw new ArgumentException("Endereço incompleto.");
-            }
-
-            // 2️⃣ Verificar se o estabelecimento existe
-            var estabelecimento = await _repository.GetEstabelecimentoByIdAsync(estabelecimentoId);
-            if (estabelecimento == null)
-                throw new KeyNotFoundException("Estabelecimento não encontrado.");
-
-            // 3️⃣ Criar endereço
+            // 3️⃣ Criar Endereço primeiro
             var endereco = new Endereco
             {
-                CEP =dto.Endereco.CEP,
-                UF =dto.Endereco.UF,
-                Complemento = dto.Endereco.Complemento,
-                EstabelecimentoId = estabelecimentoId,
                 Rua = dto.Endereco.Rua,
                 Numero = dto.Endereco.Numero,
                 Bairro = dto.Endereco.Bairro,
-                Cidade = dto.Endereco.Cidade
+                Cidade = dto.Endereco.Cidade,
+                UF = dto.Endereco.UF,
+                CEP = dto.Endereco.CEP,
+                Complemento = dto.Endereco.Complemento,
             };
-            await _repository.AddEnderecoAsync(endereco);
+            await _pedidoRepo.AddEnderecoAsync(endereco); // aqui o Id é gerado
 
-            // 4️⃣ Criar usuário
-            var usuario = new Usuario
-            {
-                Nome = dto.Usuario.Nome,
-                Telefone = dto.Usuario.Telefone,
-                EnderecoId = endereco.Id,
-                EstabelecimentoId = estabelecimentoId,
-                clientKey = "client key"
-                
-            };
-            await _repository.AddUsuarioAsync(usuario);
+            // 4️⃣ Resolver usuário já com EnderecoId válido
+            Usuario usuario = await ResolverUsuario(endereco, clientKey, estabelecimentoId, dto);
 
-            // 5️⃣ Criar pedido
+
+            // 5️⃣ Criar Pedido
             var pedido = new Models.Pedido
             {
                 UsuarioId = usuario.Id,
                 EstabelecimentoId = estabelecimentoId,
                 MetodoPagamentoId = dto.MetodoPagamentoId,
                 EnderecoId = endereco.Id,
-                Observacao = dto.Observacao,
+                Observacao = dto.Observacao ?? "",
+                Status = "Pendente",
             };
-            await _repository.AddPedidoAsync(pedido);
+            await _pedidoRepo.AddPedidoAsync(pedido);
 
-            // 6️⃣ Adicionar produtos
-            var produtosPedido = new List<ProdutoPedido>();
-            foreach (var item in dto.Produtos)
-            {
-                var produto = await _repository.GetProdutoByIdAsync(item.ProdutoId);
-                if (produto == null)
-                    throw new KeyNotFoundException($"Produto com ID {item.ProdutoId} não encontrado.");
+            // 6️⃣ Adicionar Produtos e Mapear Retorno
+            var produtosPedido = await ProcessarProdutos(dto.Produtos, pedido, estabelecimentoId);
+            await _pedidoRepo.AddProdutosPedidoAsync(produtosPedido);
 
-                if (item.Quantidade <= 0)
-                    throw new ArgumentException($"Quantidade do produto {produto.Nome} deve ser maior que zero.");
-
-                produtosPedido.Add(new ProdutoPedido
-                {
-                    PedidoId = pedido.Id,
-                    ProdutoId = item.ProdutoId,
-                    Quantidade = item.Quantidade,
-                    EstabelecimentoId = estabelecimentoId,
-                    
-                    Produto = produto,
-                    Pedido = pedido,
-                });
-            }
-            await _repository.AddProdutosPedidoAsync(produtosPedido);
-
-            return pedido.Id.ToString();
+            if (estabelecimento == null) throw new ArgumentNullException(nameof(dto));
+            // 7️⃣ Retorno mapeado para o DTO completo
+            return MapearParaDTO(pedido, estabelecimento, usuario, endereco, produtosPedido);
         }
 
-        public async Task<GetPedidoDTO> GetPedidoById(int id, int estabelecimentoId)
+        public async Task<List<GetPedidoDTO>> GetPedidosByClientKey(string clientKey, int estabelecimentoId)
         {
-            var pedido = await _repository.GetByIdAsync(id, estabelecimentoId);
+            if (string.IsNullOrWhiteSpace(clientKey)) throw new ArgumentException("clientKey inválida.");
 
-            if (pedido == null )
-                throw new KeyNotFoundException("Pedido não encontrado.");
-            if (pedido.Estabelecimento == null)
-                throw new KeyNotFoundException("Estabelecimento não encontrado.");
-            if (pedido.Usuario == null)
-                throw new KeyNotFoundException("Usuario nao encontrado");
+            var pedidos = await _pedidoRepo.GetPedidosByClientKey(clientKey.Trim().ToLower(), estabelecimentoId);
+
+            // Se a lista for nula, retorna lista vazia em vez de dar erro
+            if (pedidos == null) return new List<GetPedidoDTO>();
+
+            return pedidos
+                .Select(p => MapearParaDTO(p, p.Estabelecimento, p.Usuario, p.Endereco, p.Produtos?.ToList() ?? new List<ProdutoPedido>()))
+                .ToList();
+        }
+        private async Task<Usuario> ResolverUsuario(Endereco endereco, string? clientKey, int estId, CreatePedidoDTO dto)
+        {
+            Usuario? usuario = null;
+            if (!string.IsNullOrEmpty(clientKey))
+                usuario = await _usuarioRepo.GetByClientKey(clientKey, estId);
+
+            if (usuario == null)
+            {
+                usuario = new Usuario
+                {
+                    Nome = dto.Usuario.Nome,
+                    Telefone = dto.Usuario.Telefone,
+                    EstabelecimentoId = estId,
+                    clientKey = string.IsNullOrEmpty(clientKey) ? Guid.NewGuid().ToString("N") : clientKey,
+                };
+                await _pedidoRepo.AddUsuarioAsync(usuario);
+            }
+            return usuario;
+        }
+
+        private async Task<List<ProdutoPedido>> ProcessarProdutos(List<CreateProdutoPedidoDTO> itens, Models.Pedido pedido, int estId)
+        {
+            var lista = new List<ProdutoPedido>();
+            foreach (var item in itens)
+            {
+                var produto = await _pedidoRepo.GetProdutoByIdAsync(item.ProdutoId)
+                    ?? throw new KeyNotFoundException($"Produto {item.ProdutoId} não encontrado.");
+
+                lista.Add(new ProdutoPedido
+                {
+                    PedidoId = pedido.Id,
+                    ProdutoId = produto.Id,
+                    Quantidade = item.Quantidade,
+                    EstabelecimentoId = estId,
+                    Produto = produto
+                });
+            }
+            return lista;
+        }
+        private GetPedidoDTO MapearParaDTO(Models.Pedido p, Models.Estabelecimento? est, Usuario? u, Endereco? end, List<ProdutoPedido> prods)
+        {
+            // Validação de segurança: Se os objetos essenciais forem nulos, lançamos uma exceção clara ou tratamos
+            if (est == null) throw new Exception($"Erro de integridade: Pedido {p.Id} sem estabelecimento carregado.");
+            if (u == null) throw new Exception($"Erro de integridade: Pedido {p.Id} sem usuário carregado.");
+            if (end == null) throw new Exception($"Erro de integridade: Pedido {p.Id} sem endereço carregado.");
+
             return new GetPedidoDTO
             {
-                Estabelecimento = pedido.Estabelecimento.NomeFantasia,
-                produtos = pedido.Produtos.Select(prod => new GetProdutoPedidoDTO
+                Id = p.Id,
+                Observacao = p.Observacao ?? "",
+                Status = p.Status ?? "Pendente",
+                CreatedAt = p.CreatedAt,
+                MetodoPagamentoId = p.MetodoPagamentoId,
+                Estabelecimento = new GetEstabelecimentoDTO
                 {
-                    Produto = prod.Produto.Nome,
-                    Preco = prod.Produto.Preco,
-                    Quantidade = prod.Quantidade
-                }).ToList(),
+                    Id = est.Id,
+                    slug = est.slug ?? "",
+                    NomeFantasia = est.NomeFantasia ?? "Não informado",
+                    Telefone = est.Telefone ?? "",
+                    Email = est.Email ?? "",
+                    Whatsapp = est.Whatsapp ?? "",
+                    TaxaEntrega = est.TaxaEntrega,
+                    PedidoMinimo = est.PedidoMinimo,
+                    Abertura = est.Abertura,
+                    Fechamento = est.Fechamento,
+                },
+                Endereco = new GetEnderecoDTO
+                {
+                    Rua = end.Rua ?? "",
+                    Numero = end.Numero,
+                    Bairro = end.Bairro ?? "",
+                    Cidade = end.Cidade ?? "",
+                    Uf = end.UF ?? "",
+                    Cep = end.CEP != null ? end.CEP.ToString() : ""
+                },
                 usuario = new GetUsuarioDTO
                 {
-                    nome = pedido.Usuario.Nome,
-                    telefone = pedido.Usuario.Telefone
-                }
+                    nome = u.Nome ?? "Cliente",
+                    telefone = u.Telefone ?? "",
+                    ClientKey = u.clientKey ?? ""
+                },
+                produtos = prods.Select(pp => new GetProdutoPedidoDTO
+                {
+                    ProdutoId = pp.ProdutoId,
+                    Nome = pp.Produto?.Nome ?? "Produto Indisponível",
+                    Preco = pp.Produto?.Preco ?? 0,
+                    Quantidade = pp.Quantidade,
+                    ImgUrl = pp.Produto?.ImgUrl ?? ""
+                }).ToList()
             };
         }
     }

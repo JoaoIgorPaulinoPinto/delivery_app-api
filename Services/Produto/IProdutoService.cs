@@ -1,7 +1,7 @@
 ﻿using comaagora.DTO;
 using comaagora.Models;
 
-namespace comaagora.Services
+namespace comaagora.Services.Produto
 {
     public interface IProdutoService
     {

@@ -1,7 +1,8 @@
 ﻿using comaagora.Data;
 using comaagora.Repositories;
-using comaagora.Services;
+using comaagora.Services.Estabelecimento;
 using comaagora.Services.Pedido;
+using comaagora.Services.Produto;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,8 +35,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<ProdutoRepository>();
 builder.Services.AddScoped<PedidoRepository>();
-
-
+builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IEstabelecimentoService, EstabelecimentoService>();
