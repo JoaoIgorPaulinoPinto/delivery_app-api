@@ -80,8 +80,7 @@ namespace comaagora.Services.Pedido
             // 🔥 SALVA TUDO EM UMA TRANSAÇÃO
             await _pedidoRepo.AddPedidoAsync(pedido);
 
-            return (
-                    new GetPedidoDTO
+            return ( new GetPedidoDTO
                     {
                         Endereco = new GetEnderecoDTO
                         {
@@ -112,7 +111,7 @@ namespace comaagora.Services.Pedido
                         produtos = pedido.Produtos.Select(p => new GetProdutoPedidoDTO
                         {
                             ProdutoId = p.ProdutoId,
-                            Nome = p.Produto.Nome,
+                            Nome = p.Produto!.Nome,
                             Preco = p.Produto.Preco,
                             Quantidade = p.Quantidade
                         }).ToList()
@@ -162,7 +161,7 @@ namespace comaagora.Services.Pedido
             {
                 Endereco = new GetEnderecoDTO
                 {
-                    Bairro = p.Endereco.Bairro,
+                    Bairro = p.Endereco!.Bairro,
                     Rua = p.Endereco.Rua,
                     Cidade = p.Endereco.Cidade,
                     Uf = p.Endereco.UF,
@@ -170,7 +169,7 @@ namespace comaagora.Services.Pedido
                 },
                 Estabelecimento = new GetEstabelecimentoDTO
                 {
-                    Id = p.Estabelecimento.Id,
+                    Id = p.Estabelecimento!.Id,
                     slug = p.Estabelecimento.slug,
                     NomeFantasia = p.Estabelecimento.NomeFantasia,
                     Telefone = p.Estabelecimento.Telefone,
@@ -185,13 +184,13 @@ namespace comaagora.Services.Pedido
                 },
                 usuario = new GetUsuarioDTO
                 {
-                    nome = p.Usuario.Nome,
+                    nome = p.Usuario!.Nome,
                     telefone = p.Usuario.Telefone
                 },
                 produtos = p.Produtos.Select(prod => new GetProdutoPedidoDTO
                 {
                     ProdutoId = prod.ProdutoId,
-                    Nome = prod.Produto.Nome,
+                    Nome = prod.Produto!.Nome,
                     Preco = prod.Produto.Preco,
                     Quantidade = prod.Quantidade
                 }).ToList()

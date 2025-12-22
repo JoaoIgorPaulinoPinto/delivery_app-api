@@ -12,11 +12,7 @@ namespace comaagora.DTO
         public required GetEstabelecimentoDTO Estabelecimento { get; set; }
         public required GetEnderecoDTO Endereco { get; set; }
         public required GetUsuarioDTO usuario { get; set; }
-        public Usuario? Usuario { get; }
-        public required List<GetProdutoPedidoDTO> produtos { get; set; }
-        public Pedido? Pedido { get; }
-        public Estabelecimento? Estabelecimento1 { get; }
-        public Endereco? Endereco1 { get; }
-        public List<ProdutoPedido>? ProdutoPedidos { get; }
+
+        public required List<GetProdutoPedidoDTO> produtos { get; set; } = new List<GetProdutoPedidoDTO>();
     }
 }

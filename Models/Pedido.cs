@@ -7,8 +7,8 @@ namespace comaagora.Models
         public  int Id { get; set; }
         public  int EstabelecimentoId { get; set; }
         public  int EnderecoId { get; set; }
-        public string? Status { get; set; }
-        public  string Observacao { get; set; }
+        public string? Status { get; set; } = string.Empty;
+        public string Observacao { get; set; } = string.Empty;
         public  int UsuarioId { get; set; }
         public int MetodoPagamentoId { get; set; }   
         public  Estabelecimento? Estabelecimento { get; set; }      
