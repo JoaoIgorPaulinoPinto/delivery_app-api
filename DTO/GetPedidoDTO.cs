@@ -11,9 +11,12 @@ namespace comaagora.DTO
         public int MetodoPagamentoId { get; set; }
         public required GetEstabelecimentoDTO Estabelecimento { get; set; }
         public required GetEnderecoDTO Endereco { get; set; }
-
-        // CORREÇÃO: Nomes em minúsculo para bater com o service
         public required GetUsuarioDTO usuario { get; set; }
+        public Usuario? Usuario { get; }
         public required List<GetProdutoPedidoDTO> produtos { get; set; }
+        public Pedido? Pedido { get; }
+        public Estabelecimento? Estabelecimento1 { get; }
+        public Endereco? Endereco1 { get; }
+        public List<ProdutoPedido>? ProdutoPedidos { get; }
     }
 }

@@ -6,26 +6,26 @@ namespace comaagora.DTO
     {
         public int Id { get; set; }
 
-        public required string slug { get; set; }
+        public  string slug { get; set; } = string.Empty;
 
         // Identificação
-        public required string NomeFantasia { get; set; } = null!;
+        public  string NomeFantasia { get; set; } = string.Empty;
 
         // Contato
-        public required string Telefone { get; set; } = null!;
-        public required string Email { get; set; }
-        public required string Whatsapp { get; set; }
+        public  string Telefone { get; set; } = string.Empty;
+        public  string Email { get; set; } = string.Empty;
+        public  string Whatsapp { get; set; } = string.Empty;
 
         // Endereço
-        public Endereco Endereco { get; set; } = null!;
+        public Endereco? Endereco { get; set; }
 
         // Funcionamento
         public TimeSpan Abertura { get; set; }
         public TimeSpan Fechamento { get; set; }
 
         // Financeiro
-        public required decimal TaxaEntrega { get; set; }
-        public required decimal PedidoMinimo { get; set; }
+        public  decimal TaxaEntrega { get; set; }
+        public  decimal PedidoMinimo { get; set; }
 
         // Status
         public EstabelecimentoStatus Status { get; set; } = null!;
