@@ -2,7 +2,8 @@
 {
     public class ProdutoCategoriaDTO
     {
-        public required string Nome { get; set; } = "";
-        public required int Id { get; set; }
+        public int Id { get; set; }
+        public string Nome { get; set; } = "";
     }
+
 }

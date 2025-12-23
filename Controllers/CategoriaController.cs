@@ -23,7 +23,7 @@ namespace comaagora.Controllers
                 .Select(c => new ProdutoCategoriaDTO
                 {
                     Id = c.Id,
-                    Nome = c.nome ?? "",
+                    Nome = c.Nome ?? "",
                 }).ToList());
         }
     }

@@ -1,5 +1,6 @@
 ﻿using comaagora.Data;
 using comaagora.Repositories;
+using comaagora.Services;
 using comaagora.Services.Estabelecimento;
 using comaagora.Services.Pedido;
 using comaagora.Services.Produto;
@@ -39,6 +40,10 @@ builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IEstabelecimentoService, EstabelecimentoService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IEnderecoService, EnderecoService>();
+builder.Services.AddScoped<IProdutoPedidoService, ProdutoPedidoService>();
+builder.Services.AddScoped<IPedidoService, PedidoService>();
 
 var app = builder.Build();
 

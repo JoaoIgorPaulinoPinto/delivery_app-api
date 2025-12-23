@@ -13,40 +13,38 @@ namespace comaagora.Services.Produto
             _repository = repository;
         }
 
-        public async Task<List<ProdutoDTO>> GetAll(int estabelecimentoId)
+        public async Task<List<GetProdutoDTO>> GetAll(int estabelecimentoId)
         {
             var produtos = await _repository.GetAllByEstabelecimentoAsync(estabelecimentoId);
 
-            return produtos.Select(p => new ProdutoDTO
+            return produtos.Select(p => new GetProdutoDTO
             {
                 Id = p.Id,
                 Nome = p.Nome,
                 Preco = p.Preco,
                 ImgUrl = p.ImgUrl,
                 Descricao = p.Descricao,
-                Categoria = p.Categoria?.nome ?? string.Empty,
-                Status = p.Status?.nome ?? string.Empty,
-                estabelecimento = p.Estabelecimento?.NomeFantasia ?? string.Empty
+                Categoria = p.Categoria?.Nome ?? string.Empty,
+                Status = p.Status?.Nome ?? string.Empty,
             }).ToList();
         }
 
-        public async Task<ProdutoDTO> GetByID(int id, int estabelecimentoId)
+        public async Task<GetProdutoDTO> GetByID(int id, int estabelecimentoId)
         {
             var p = await _repository.GetByIdAsync(id, estabelecimentoId);
 
             if (p == null)
                 throw new KeyNotFoundException("Produto não encontrado");
 
-            return new ProdutoDTO
+            return new GetProdutoDTO
             {
                 Id = p.Id,
                 Nome = p.Nome,
                 Preco = p.Preco,
                 Descricao = p.Descricao,
                 ImgUrl = p.ImgUrl,
-                Categoria = p.Categoria?.nome ?? string.Empty,
-                Status = p.Status?.nome ?? string.Empty,
-                estabelecimento = p.Estabelecimento?.NomeFantasia ?? string.Empty
+                Categoria = p.Categoria?.Nome ?? string.Empty,
+                Status = p.Status?.Nome ?? string.Empty,
             };
         }
     }

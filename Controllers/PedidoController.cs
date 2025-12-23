@@ -1,10 +1,6 @@
-﻿using comaagora.Data;
-using comaagora.DTO;
-using comaagora.Models;
-using comaagora.Services;
+﻿using comaagora.DTO;
 using comaagora.Services.Pedido;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("[controller]")]

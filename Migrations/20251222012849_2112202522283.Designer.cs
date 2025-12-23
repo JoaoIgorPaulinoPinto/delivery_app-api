@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using comaagora.Data;
 
@@ -11,9 +12,11 @@ using comaagora.Data;
 namespace comaagora.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251222012849_2112202522283")]
+    partial class _2112202522283
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,6 +63,9 @@ namespace comaagora.Migrations
                     b.Property<string>("Rua")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
 
                     b.Property<string>("UF")
                         .IsRequired()
@@ -117,6 +123,9 @@ namespace comaagora.Migrations
                     b.Property<decimal>("PedidoMinimo")
                         .HasColumnType("decimal(65,30)");
 
+                    b.Property<int?>("ProdutoCategoriaId")
+                        .HasColumnType("int");
+
                     b.Property<string>("RazaoSocial")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -148,6 +157,8 @@ namespace comaagora.Migrations
                         .IsUnique();
 
                     b.HasIndex("EstabelecimentoStatusId");
+
+                    b.HasIndex("ProdutoCategoriaId");
 
                     b.ToTable("Estabelecimentos");
                 });
@@ -455,7 +466,7 @@ namespace comaagora.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("CreatedAt"));
 
-                    b.Property<int>("EstabelecimentoId")
+                    b.Property<int?>("EstabelecimentoId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -523,6 +534,10 @@ namespace comaagora.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("comaagora.Models.ProdutoCategoria", null)
+                        .WithMany("Estabelecimentos")
+                        .HasForeignKey("ProdutoCategoriaId");
+
                     b.Navigation("Endereco");
 
                     b.Navigation("EstabelecimentoStatus");
@@ -575,7 +590,7 @@ namespace comaagora.Migrations
                         .IsRequired();
 
                     b.HasOne("comaagora.Models.Usuario", "Usuario")
-                        .WithMany("Pedidos")
+                        .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -592,7 +607,7 @@ namespace comaagora.Migrations
             modelBuilder.Entity("comaagora.Models.Produto", b =>
                 {
                     b.HasOne("comaagora.Models.ProdutoCategoria", "Categoria")
-                        .WithMany("Produtos")
+                        .WithMany()
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -618,8 +633,8 @@ namespace comaagora.Migrations
 
             modelBuilder.Entity("comaagora.Models.ProdutoCategoria", b =>
                 {
-                    b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
-                        .WithMany("ProdutoCategoria")
+                    b.HasOne("comaagora.Models.Estabelecimento", "estabelecimento")
+                        .WithMany()
                         .HasForeignKey("EstabelecimentoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -630,7 +645,7 @@ namespace comaagora.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Estabelecimento");
+                    b.Navigation("estabelecimento");
 
                     b.Navigation("status");
                 });
@@ -664,13 +679,9 @@ namespace comaagora.Migrations
 
             modelBuilder.Entity("comaagora.Models.Status", b =>
                 {
-                    b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
+                    b.HasOne("comaagora.Models.Estabelecimento", null)
                         .WithMany("Status")
-                        .HasForeignKey("EstabelecimentoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Estabelecimento");
+                        .HasForeignKey("EstabelecimentoId");
                 });
 
             modelBuilder.Entity("comaagora.Models.Usuario", b =>
@@ -705,8 +716,6 @@ namespace comaagora.Migrations
 
                     b.Navigation("Pedidos");
 
-                    b.Navigation("ProdutoCategoria");
-
                     b.Navigation("Produtos");
 
                     b.Navigation("ProdutosPedido");
@@ -731,7 +740,7 @@ namespace comaagora.Migrations
 
             modelBuilder.Entity("comaagora.Models.ProdutoCategoria", b =>
                 {
-                    b.Navigation("Produtos");
+                    b.Navigation("Estabelecimentos");
                 });
 
             modelBuilder.Entity("comaagora.Models.Status", b =>
@@ -739,11 +748,6 @@ namespace comaagora.Migrations
                     b.Navigation("Categorias");
 
                     b.Navigation("Produtos");
-                });
-
-            modelBuilder.Entity("comaagora.Models.Usuario", b =>
-                {
-                    b.Navigation("Pedidos");
                 });
 #pragma warning restore 612, 618
         }

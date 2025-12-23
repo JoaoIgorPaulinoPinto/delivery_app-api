@@ -1,16 +1,27 @@
-﻿using comaagora.Models;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace comaagora.DTO
 {
-    public class ProdutoDTO
+    public class CreateProdutoDTO
     {
-        public required int Id { get; set; }
-        public required string Nome { get; set; } = "";
-        public required string Descricao { get; set; } = "";
-        public required string ImgUrl { get; set; } = "";
-        public required decimal Preco { get; set; } = 0;
-        public required string Categoria { get; set; } = "";
-        public required string Status { get; set; } = "";
-        public required string estabelecimento { get; set; } = "";
+        public string Nome { get; set; } = "";
+        public string Descricao { get; set; } = "";
+        public decimal Preco { get; set; }
+        public string Status { get; set; } = "";
+        public string ImgUrl { get; set; } = "";
+        public int CategoriaId { get; set; }
     }
+
+    public class GetProdutoDTO
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; } = "";
+        public string Descricao { get; set; } = "";
+        public string ImgUrl { get; set; } = "";
+        public string Status { get; set; } = "";
+        public decimal Preco { get; set; }
+        public string Categoria { get; set; } = "";
+    }
+
+
 }

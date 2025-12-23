@@ -16,26 +16,40 @@ namespace comaagora.Services.Estabelecimento
         public async Task<GetEstabelecimentoDTO?> GetBySlug(string slug)
         {
             var estabelecimento = await _context.Estabelecimentos
-                .Where(e => e.slug == slug)
+                .Where(e => e.Slug == slug)
                 .Select(e => new GetEstabelecimentoDTO
                 {
                     Id = e.Id,
-                    slug = e.slug,
+                    Slug = e.Slug,
                     NomeFantasia = e.NomeFantasia,
                     Telefone = e.Telefone,
                     Email = e.Email,
                     Whatsapp = e.Whatsapp,
-                    Endereco = e.Endereco,
-                    Abertura = e.Abertura,
-                    Fechamento = e.Fechamento,
+                    Endereco = new GetEnderecoDTO
+                    {
+                        Rua = e.Endereco.Rua,
+                        Numero = e.Endereco.Numero,
+                        Bairro = e.Endereco.Bairro,
+                        Cidade = e.Endereco.Cidade,
+                        Uf = e.Endereco.Uf,
+                        Cep = e.Endereco.Cep,
+                        Complemento = e.Endereco.Complemento
+                    },
                     TaxaEntrega = e.TaxaEntrega,
                     PedidoMinimo = e.PedidoMinimo,
-                    Status = e.EstabelecimentoStatus
+                    Status = e.EstabelecimentoStatus.Nome,
+                    HorariosFuncionamento = e.HorariosFuncionamento
+                        .Select(h => new GetHorarioFuncionamentoDTO
+                        {
+                            DiaSemana = h.DiaSemana,
+                            Abertura = h.Abertura,
+                            Fechamento = h.Fechamento
+                        })
+                        .ToList()
                 })
                 .FirstOrDefaultAsync();
 
             return estabelecimento;
         }
-
     }
 }

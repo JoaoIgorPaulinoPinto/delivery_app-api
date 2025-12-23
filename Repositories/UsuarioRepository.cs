@@ -16,7 +16,7 @@ namespace comaagora.Repositories
         public async Task<Usuario?> GetByClientKey(string clientKey, int estId)
         {
             return await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.clientKey == clientKey && u.EstabelecimentoId == estId);
+                .FirstOrDefaultAsync(u => u.ClientKey == clientKey && u.EstabelecimentoId == estId);
         }
 
     }

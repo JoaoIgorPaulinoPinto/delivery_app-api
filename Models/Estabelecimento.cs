@@ -1,46 +1,80 @@
-﻿using comaagora.Models.Base;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using comaagora.Models.Base;
 
 namespace comaagora.Models
 {
-    public class Estabelecimento: BaseEntity
+    public class Estabelecimento : BaseEntity
     {
+        [Key]
         public int Id { get; set; }
 
-        public required string slug { get; set; }
+        [Required]
+        [MaxLength(255)]
+        public string Slug { get; set; } = null!;
 
-        // Identificação
-        public required string NomeFantasia { get; set; } = null!;
-        public required string RazaoSocial { get; set; }
-        public required string Cnpj { get; set; }
+        [Required]
+        [MaxLength(255)]
+        public string NomeFantasia { get; set; } = null!;
 
-        // Contato
-        public required string Telefone { get; set; } = null!;
-        public required string Email { get; set; }
-        public required string Whatsapp { get; set; }
+        [Required]
+        [MaxLength(255)]
+        public string RazaoSocial { get; set; } = null!;
 
-        // Endereço
-        public required int EnderecoId { get; set; }
-        public  Endereco Endereco { get; set; } = null!;
+        [Required]
+        [StringLength(18)]
+        [RegularExpression(@"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$", ErrorMessage = "CNPJ inválido. Formato esperado: 00.000.000/0000-00")]
+        public string Cnpj { get; set; } = null!;
 
-        // Funcionamento
-        public TimeSpan Abertura { get; set; }
-        public TimeSpan Fechamento { get; set; }
+        [Required]
+        [Phone]
+        [MaxLength(20)]
+        public string Telefone { get; set; } = null!;
 
-        // Financeiro
-        public required decimal TaxaEntrega { get; set; }
-        public required decimal PedidoMinimo { get; set; }
+        [Required]
+        [MaxLength(255)]
+        [EmailAddress]
+        public string Email { get; set; } = null!;
 
-        // Status
-        public required int EstabelecimentoStatusId { get; set; }
-        public  EstabelecimentoStatus EstabelecimentoStatus { get; set; } = null!;
+        [Required]
+        [Phone]
+        [MaxLength(20)]
+        public string Whatsapp { get; set; } = null!;
+
+        [Required]
+        public int EnderecoId { get; set; }
+
+        [ForeignKey(nameof(EnderecoId))]
+        public Endereco Endereco { get; set; } = null!;
+
+        [Required]
+        public int EstabelecimentoStatusId { get; set; }
+
+        [ForeignKey(nameof(EstabelecimentoStatusId))]
+        public EstabelecimentoStatus EstabelecimentoStatus { get; set; } = null!;
+
+        [Required]
+        public int TenantId { get; set; }
+
+        [ForeignKey(nameof(TenantId))]
+        public Tenant Tenant { get; set; } = null!;
+
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal TaxaEntrega { get; set; }
+
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal PedidoMinimo { get; set; }
 
         // Relacionamentos
         public ICollection<Status> Status { get; set; } = new List<Status>();
         public ICollection<Produto> Produtos { get; set; } = new List<Produto>();
         public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
         public ICollection<ProdutoPedido> ProdutosPedido { get; set; } = new List<ProdutoPedido>();
-        public ICollection<EstabelecimentoCategoria> Categoria { get; set; } = new List<EstabelecimentoCategoria>();
+        public ICollection<EstabelecimentoCategoria> Categorias { get; set; } = new List<EstabelecimentoCategoria>();
+        public ICollection<ProdutoCategoria> ProdutoCategorias { get; set; } = new List<ProdutoCategoria>();
         public ICollection<MetodoPagamento> MetodosPagamento { get; set; } = new List<MetodoPagamento>();
-
+        public ICollection<HorarioFuncionamento> HorariosFuncionamento { get; set; } = new List<HorarioFuncionamento>();
     }
 }

@@ -72,7 +72,7 @@ namespace comaagora.Repositories
                 .Include(p => p.Endereco)        // OBRIGATÓRIO
                 .Include(p => p.Produtos)        // OBRIGATÓRIO
                     .ThenInclude(pp => pp.Produto)
-                .Where(p => p.Usuario!.clientKey == clientKey && p.EstabelecimentoId == estId)
+                .Where(p => p.Usuario!.ClientKey == clientKey && p.EstabelecimentoId == estId)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
         }

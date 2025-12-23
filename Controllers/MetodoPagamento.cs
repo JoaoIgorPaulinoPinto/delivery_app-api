@@ -1,8 +1,5 @@
 ﻿using comaagora.Data;
 using comaagora.DTO;
-using comaagora.Models;
-using comaagora.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

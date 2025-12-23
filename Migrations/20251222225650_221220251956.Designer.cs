@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using comaagora.Data;
 
@@ -11,9 +12,11 @@ using comaagora.Data;
 namespace comaagora.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251222225650_221220251956")]
+    partial class _221220251956
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,6 +63,9 @@ namespace comaagora.Migrations
                     b.Property<string>("Rua")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
 
                     b.Property<string>("UF")
                         .IsRequired()
@@ -592,7 +598,7 @@ namespace comaagora.Migrations
             modelBuilder.Entity("comaagora.Models.Produto", b =>
                 {
                     b.HasOne("comaagora.Models.ProdutoCategoria", "Categoria")
-                        .WithMany("Produtos")
+                        .WithMany()
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -725,11 +731,6 @@ namespace comaagora.Migrations
                 });
 
             modelBuilder.Entity("comaagora.Models.Pedido", b =>
-                {
-                    b.Navigation("Produtos");
-                });
-
-            modelBuilder.Entity("comaagora.Models.ProdutoCategoria", b =>
                 {
                     b.Navigation("Produtos");
                 });

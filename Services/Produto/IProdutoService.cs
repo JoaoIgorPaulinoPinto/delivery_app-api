@@ -5,7 +5,7 @@ namespace comaagora.Services.Produto
 {
     public interface IProdutoService
     {
-        public Task<List<ProdutoDTO>> GetAll(int estabelecimentoId);
-        public Task<ProdutoDTO> GetByID(int id,int estabelecimentoId);
+        public Task<List<GetProdutoDTO>> GetAll(int estabelecimentoId);
+        public Task<GetProdutoDTO> GetByID(int id,int estabelecimentoId);
     }
 }
