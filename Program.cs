@@ -1,6 +1,6 @@
 ﻿using comaagora.Data;
 using comaagora.Repositories;
-using comaagora.Services;
+using comaagora.Services.Endereco;
 using comaagora.Services.Estabelecimento;
 using comaagora.Services.Pedido;
 using comaagora.Services.Produto;
@@ -29,21 +29,21 @@ builder.Services.AddCors(options =>
         policy
             .AllowAnyOrigin()
             .AllowAnyMethod()
-            .AllowAnyHeader(); // 🔥 importante
+            .AllowAnyHeader(); 
     });
 });
 
 
-builder.Services.AddScoped<ProdutoRepository>();
-builder.Services.AddScoped<PedidoRepository>();
-builder.Services.AddScoped<UsuarioRepository>();
-builder.Services.AddScoped<IProdutoService, ProdutoService>();
-builder.Services.AddScoped<IPedidoService, PedidoService>();
-builder.Services.AddScoped<IEstabelecimentoService, EstabelecimentoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IEnderecoService, EnderecoService>();
 builder.Services.AddScoped<IProdutoPedidoService, ProdutoPedidoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<IProdutoService, ProdutoService>();
+builder.Services.AddScoped<IEstabelecimentoService, EstabelecimentoService>();
+    
+builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddScoped<PedidoRepository>();
+builder.Services.AddScoped<ProdutoRepository>();
 
 var app = builder.Build();
 

@@ -5,7 +5,7 @@
 namespace comaagora.Migrations
 {
     /// <inheritdoc />
-    public partial class _2112202522283 : Migration
+    public partial class addrequiredtoadressagain : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

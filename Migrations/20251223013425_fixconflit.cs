@@ -5,7 +5,7 @@
 namespace comaagora.Migrations
 {
     /// <inheritdoc />
-    public partial class _141220251729 : Migration
+    public partial class fixconflit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

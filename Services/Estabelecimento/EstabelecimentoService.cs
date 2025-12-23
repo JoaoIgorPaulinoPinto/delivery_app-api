@@ -1,6 +1,5 @@
 ﻿using comaagora.Data;
 using comaagora.DTO;
-using comaagora.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace comaagora.Services.Estabelecimento

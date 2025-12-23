@@ -1,6 +1,6 @@
 ﻿using comaagora.DTO;
 using comaagora.Models;
-using comaagora.Services;
+using comaagora.Services.Endereco;
 
 public class EnderecoService: IEnderecoService
 {
@@ -18,5 +18,4 @@ public class EnderecoService: IEnderecoService
             EstabelecimentoId = estabelecimentoId
         };
     }
-
 }

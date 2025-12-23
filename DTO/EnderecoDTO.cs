@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace comaagora.DTO
 {
     public class CreateEnderecoDTO

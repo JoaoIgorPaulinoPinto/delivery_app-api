@@ -12,8 +12,8 @@ using comaagora.Data;
 namespace comaagora.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251214201247_141220251712")]
-    partial class _141220251712
+    [Migration("20251223012759_RestartDB")]
+    partial class RestartDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,18 +35,22 @@ namespace comaagora.Migrations
 
                     b.Property<string>("Bairro")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<int>("CEP")
-                        .HasColumnType("int");
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("varchar(8)");
 
                     b.Property<string>("Cidade")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Complemento")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -57,16 +61,20 @@ namespace comaagora.Migrations
                     b.Property<int>("EstabelecimentoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Numero")
-                        .HasColumnType("int");
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Rua")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<string>("UF")
+                    b.Property<string>("Uf")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -89,12 +97,10 @@ namespace comaagora.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<TimeSpan>("Abertura")
-                        .HasColumnType("time(6)");
-
                     b.Property<string>("Cnpj")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(18)
+                        .HasColumnType("varchar(18)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -104,40 +110,43 @@ namespace comaagora.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("EnderecoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EnderecoId1")
                         .HasColumnType("int");
 
                     b.Property<int>("EstabelecimentoStatusId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("Fechamento")
-                        .HasColumnType("time(6)");
-
                     b.Property<string>("NomeFantasia")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<decimal>("PedidoMinimo")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int?>("ProdutoCategoriaId")
-                        .HasColumnType("int");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("RazaoSocial")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<decimal>("TaxaEntrega")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("Telefone")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -147,19 +156,17 @@ namespace comaagora.Migrations
 
                     b.Property<string>("Whatsapp")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("slug")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EnderecoId1");
+                    b.HasIndex("EnderecoId")
+                        .IsUnique();
 
                     b.HasIndex("EstabelecimentoStatusId");
 
-                    b.HasIndex("ProdutoCategoriaId");
+                    b.HasIndex("TenantId");
 
                     b.ToTable("Estabelecimentos");
                 });
@@ -181,23 +188,25 @@ namespace comaagora.Migrations
                     b.Property<int>("EstabelecimentoId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime>("UpdatedAt"));
 
-                    b.Property<string>("nome")
-                        .HasColumnType("longtext");
-
-                    b.Property<int?>("statusId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EstabelecimentoId");
 
-                    b.HasIndex("statusId");
+                    b.HasIndex("StatusId");
 
                     b.ToTable("EstabelecimentoCategoria");
                 });
@@ -210,6 +219,11 @@ namespace comaagora.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
@@ -218,7 +232,8 @@ namespace comaagora.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -229,6 +244,90 @@ namespace comaagora.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EstabelecimentoStatus");
+                });
+
+            modelBuilder.Entity("comaagora.Models.HorarioFuncionamento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<TimeSpan>("Abertura")
+                        .HasColumnType("time(6)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("CreatedAt"));
+
+                    b.Property<string>("DiaSemana")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<int>("EstabelecimentoId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("Fechamento")
+                        .HasColumnType("time(6)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime>("UpdatedAt"));
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EstabelecimentoId");
+
+                    b.ToTable("HorarioFuncionamento");
+                });
+
+            modelBuilder.Entity("comaagora.Models.MetodoPagamento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("CreatedAt"));
+
+                    b.Property<int>("EstabelecimentoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime>("UpdatedAt"));
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EstabelecimentoId");
+
+                    b.ToTable("MetodoPagamento");
                 });
 
             modelBuilder.Entity("comaagora.Models.Pedido", b =>
@@ -251,9 +350,16 @@ namespace comaagora.Migrations
                     b.Property<int>("EstabelecimentoId")
                         .HasColumnType("int");
 
+                    b.Property<int>("MetodoPagamentoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Observacao")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<int>("PedidoStatusId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -270,9 +376,48 @@ namespace comaagora.Migrations
 
                     b.HasIndex("EstabelecimentoId");
 
+                    b.HasIndex("MetodoPagamentoId");
+
+                    b.HasIndex("PedidoStatusId");
+
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Pedidos");
+                });
+
+            modelBuilder.Entity("comaagora.Models.PedidoStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("CreatedAt"));
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime>("UpdatedAt"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PedidoStatus");
                 });
 
             modelBuilder.Entity("comaagora.Models.Produto", b =>
@@ -294,21 +439,24 @@ namespace comaagora.Migrations
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<int>("EstabelecimentoId")
                         .HasColumnType("int");
 
                     b.Property<string>("ImgUrl")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
@@ -347,6 +495,11 @@ namespace comaagora.Migrations
                     b.Property<int>("EstabelecimentoId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
@@ -355,9 +508,6 @@ namespace comaagora.Migrations
                         .HasColumnType("datetime(6)");
 
                     MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime>("UpdatedAt"));
-
-                    b.Property<string>("nome")
-                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -388,11 +538,17 @@ namespace comaagora.Migrations
                     b.Property<int>("PedidoId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("PrecoUnitario")
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<int>("ProdutoId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -419,14 +575,24 @@ namespace comaagora.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("CreatedAt"));
 
-                    b.Property<int?>("EstabelecimentoId")
+                    b.Property<int>("EstabelecimentoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -434,14 +600,51 @@ namespace comaagora.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime>("UpdatedAt"));
 
-                    b.Property<string>("nome")
-                        .HasColumnType("longtext");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EstabelecimentoId");
 
                     b.ToTable("Status");
+                });
+
+            modelBuilder.Entity("comaagora.Models.Tenant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("CreatedAt"));
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Plano")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime>("UpdatedAt"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tenant");
                 });
 
             modelBuilder.Entity("comaagora.Models.Usuario", b =>
@@ -452,6 +655,14 @@ namespace comaagora.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ClientKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("EnderecoId")
                         .HasColumnType("int");
 
@@ -460,15 +671,16 @@ namespace comaagora.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Telefone")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
-                    b.Property<string>("clientKey")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -491,8 +703,8 @@ namespace comaagora.Migrations
             modelBuilder.Entity("comaagora.Models.Estabelecimento", b =>
                 {
                     b.HasOne("comaagora.Models.Endereco", "Endereco")
-                        .WithMany()
-                        .HasForeignKey("EnderecoId1")
+                        .WithOne("Estabelecimento")
+                        .HasForeignKey("comaagora.Models.Estabelecimento", "EnderecoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -502,28 +714,58 @@ namespace comaagora.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("comaagora.Models.ProdutoCategoria", null)
+                    b.HasOne("comaagora.Models.Tenant", "Tenant")
                         .WithMany("Estabelecimentos")
-                        .HasForeignKey("ProdutoCategoriaId");
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Endereco");
 
                     b.Navigation("EstabelecimentoStatus");
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("comaagora.Models.EstabelecimentoCategoria", b =>
                 {
-                    b.HasOne("comaagora.Models.Estabelecimento", null)
-                        .WithMany("Categoria")
+                    b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
+                        .WithMany("Categorias")
                         .HasForeignKey("EstabelecimentoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("comaagora.Models.Status", "status")
+                    b.HasOne("comaagora.Models.Status", "Status")
                         .WithMany()
-                        .HasForeignKey("statusId");
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("status");
+                    b.Navigation("Estabelecimento");
+
+                    b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("comaagora.Models.HorarioFuncionamento", b =>
+                {
+                    b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
+                        .WithMany("HorariosFuncionamento")
+                        .HasForeignKey("EstabelecimentoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estabelecimento");
+                });
+
+            modelBuilder.Entity("comaagora.Models.MetodoPagamento", b =>
+                {
+                    b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
+                        .WithMany("MetodosPagamento")
+                        .HasForeignKey("EstabelecimentoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estabelecimento");
                 });
 
             modelBuilder.Entity("comaagora.Models.Pedido", b =>
@@ -540,8 +782,20 @@ namespace comaagora.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("comaagora.Models.MetodoPagamento", "MetodoPagamento")
+                        .WithMany("Pedidos")
+                        .HasForeignKey("MetodoPagamentoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("comaagora.Models.PedidoStatus", "PedidoStatus")
+                        .WithMany("Pedidos")
+                        .HasForeignKey("PedidoStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("comaagora.Models.Usuario", "Usuario")
-                        .WithMany()
+                        .WithMany("Pedidos")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -550,13 +804,17 @@ namespace comaagora.Migrations
 
                     b.Navigation("Estabelecimento");
 
+                    b.Navigation("MetodoPagamento");
+
+                    b.Navigation("PedidoStatus");
+
                     b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("comaagora.Models.Produto", b =>
                 {
                     b.HasOne("comaagora.Models.ProdutoCategoria", "Categoria")
-                        .WithMany()
+                        .WithMany("Produtos")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -582,21 +840,21 @@ namespace comaagora.Migrations
 
             modelBuilder.Entity("comaagora.Models.ProdutoCategoria", b =>
                 {
-                    b.HasOne("comaagora.Models.Estabelecimento", "estabelecimento")
-                        .WithMany()
+                    b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
+                        .WithMany("ProdutoCategorias")
                         .HasForeignKey("EstabelecimentoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("comaagora.Models.Status", "status")
+                    b.HasOne("comaagora.Models.Status", "Status")
                         .WithMany("Categorias")
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("estabelecimento");
+                    b.Navigation("Estabelecimento");
 
-                    b.Navigation("status");
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("comaagora.Models.ProdutoPedido", b =>
@@ -628,9 +886,13 @@ namespace comaagora.Migrations
 
             modelBuilder.Entity("comaagora.Models.Status", b =>
                 {
-                    b.HasOne("comaagora.Models.Estabelecimento", null)
+                    b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
                         .WithMany("Status")
-                        .HasForeignKey("EstabelecimentoId");
+                        .HasForeignKey("EstabelecimentoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estabelecimento");
                 });
 
             modelBuilder.Entity("comaagora.Models.Usuario", b =>
@@ -652,13 +914,24 @@ namespace comaagora.Migrations
                     b.Navigation("Estabelecimento");
                 });
 
+            modelBuilder.Entity("comaagora.Models.Endereco", b =>
+                {
+                    b.Navigation("Estabelecimento");
+                });
+
             modelBuilder.Entity("comaagora.Models.Estabelecimento", b =>
                 {
-                    b.Navigation("Categoria");
+                    b.Navigation("Categorias");
 
                     b.Navigation("Enderecos");
 
+                    b.Navigation("HorariosFuncionamento");
+
+                    b.Navigation("MetodosPagamento");
+
                     b.Navigation("Pedidos");
+
+                    b.Navigation("ProdutoCategorias");
 
                     b.Navigation("Produtos");
 
@@ -672,14 +945,24 @@ namespace comaagora.Migrations
                     b.Navigation("Estabelecimentos");
                 });
 
+            modelBuilder.Entity("comaagora.Models.MetodoPagamento", b =>
+                {
+                    b.Navigation("Pedidos");
+                });
+
             modelBuilder.Entity("comaagora.Models.Pedido", b =>
                 {
                     b.Navigation("Produtos");
                 });
 
+            modelBuilder.Entity("comaagora.Models.PedidoStatus", b =>
+                {
+                    b.Navigation("Pedidos");
+                });
+
             modelBuilder.Entity("comaagora.Models.ProdutoCategoria", b =>
                 {
-                    b.Navigation("Estabelecimentos");
+                    b.Navigation("Produtos");
                 });
 
             modelBuilder.Entity("comaagora.Models.Status", b =>
@@ -687,6 +970,16 @@ namespace comaagora.Migrations
                     b.Navigation("Categorias");
 
                     b.Navigation("Produtos");
+                });
+
+            modelBuilder.Entity("comaagora.Models.Tenant", b =>
+                {
+                    b.Navigation("Estabelecimentos");
+                });
+
+            modelBuilder.Entity("comaagora.Models.Usuario", b =>
+                {
+                    b.Navigation("Pedidos");
                 });
 #pragma warning restore 612, 618
         }

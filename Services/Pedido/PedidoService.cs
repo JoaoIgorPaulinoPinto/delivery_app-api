@@ -1,19 +1,21 @@
-﻿using comaagora.Models;
+﻿using comaagora.DTO;
+using comaagora.Models;
 using comaagora.Repositories;
-using comaagora.DTO;
+using comaagora.Services.Endereco;
 using comaagora.Services.Pedido;
+
 public class PedidoService : IPedidoService
 {
     private readonly PedidoRepository _pedidoRepo;
-    private readonly UsuarioService _usuarioService;
-    private readonly EnderecoService _enderecoService;
-    private readonly ProdutoPedidoService _produtoPedidoService;
+    private readonly IUsuarioService _usuarioService;
+    private readonly IEnderecoService _enderecoService;
+    private readonly IProdutoPedidoService _produtoPedidoService;
 
     public PedidoService(
         PedidoRepository pedidoRepo,
-        UsuarioService usuarioService,
-        EnderecoService enderecoService,
-        ProdutoPedidoService produtoPedidoService)
+        IUsuarioService usuarioService,
+        IEnderecoService enderecoService,
+        IProdutoPedidoService produtoPedidoService)
     {
         _pedidoRepo = pedidoRepo;
         _usuarioService = usuarioService;
@@ -21,40 +23,61 @@ public class PedidoService : IPedidoService
         _produtoPedidoService = produtoPedidoService;
     }
 
-    public async Task<GetPedidoDTO> CreatePedido(string? clientKey, int estabelecimentoId, CreatePedidoDTO dto)
+    public async Task<GetPedidoDTO> CreatePedido(
+        string? clientKey,
+        int estabelecimentoId,
+        CreatePedidoDTO dto)
     {
-        if (dto == null || dto.Produtos == null || !dto.Produtos.Any())
+        if (dto == null)
             throw new ArgumentException("Pedido inválido.");
 
-        var estabelecimento = await _pedidoRepo.GetEstabelecimentoByIdAsync(estabelecimentoId)
+        if (dto.Produtos == null || !dto.Produtos.Any())
+            throw new ArgumentException("Pedido deve conter produtos.");
+
+        var estabelecimento =
+            await _pedidoRepo.GetEstabelecimentoByIdAsync(estabelecimentoId)
             ?? throw new KeyNotFoundException("Estabelecimento não encontrado.");
 
         var endereco = _enderecoService.CriarEndereco(dto.Endereco, estabelecimentoId);
-        var usuario = await _usuarioService.ResolverUsuario(clientKey, estabelecimentoId, dto.Usuario);
+
+        var usuario = await _usuarioService
+            .ResolverUsuario(clientKey, estabelecimentoId, dto.Usuario);
+
         usuario.Endereco = endereco;
-        var produtos = await _produtoPedidoService.CriarListaAsync(dto.Produtos, estabelecimentoId);
+
+        var produtos = await _produtoPedidoService
+            .CriarListaAsync(dto.Produtos, estabelecimentoId);
 
         var pedido = new Pedido
         {
             Usuario = usuario,
             Endereco = endereco,
-            Estabelecimento = estabelecimento,
+            EstabelecimentoId = estabelecimento.Id,
             MetodoPagamentoId = dto.MetodoPagamentoId,
-            Observacao = dto.Observacao ?? "",
+            Observacao = dto.Observacao ?? string.Empty,
             PedidoStatusId = 1,
             Produtos = produtos
         };
 
         await _pedidoRepo.AddPedidoAsync(pedido);
 
-        return MapToGetPedidoDTO(pedido);
+        // 🔥 PARTE CRÍTICA: recarregar pedido completo
+        var pedidoCompleto =
+            await _pedidoRepo.GetPedidoCompletoByIdAsync(pedido.Id)
+            ?? throw new Exception("Erro ao carregar pedido.");
+
+        return MapToGetPedidoDTO(pedidoCompleto);
     }
 
-    private GetPedidoDTO MapToGetPedidoDTO(Pedido pedido)
+    private static GetPedidoDTO MapToGetPedidoDTO(Pedido pedido)
     {
+        if (pedido == null)
+            throw new ArgumentNullException(nameof(pedido));
+
         return new GetPedidoDTO
         {
             Id = pedido.Id,
+
             Endereco = new GetEnderecoDTO
             {
                 Bairro = pedido.Endereco.Bairro,
@@ -65,8 +88,10 @@ public class PedidoService : IPedidoService
                 Numero = pedido.Endereco.Numero,
                 Complemento = pedido.Endereco.Complemento
             },
-            Status = "Pendente",
+
+            Status = pedido.PedidoStatus?.Nome ?? "Desconhecido",
             MetodoPagamentoId = pedido.MetodoPagamentoId,
+
             Estabelecimento = new GetEstabelecimentoDTO
             {
                 Id = pedido.Estabelecimento.Id,
@@ -75,6 +100,7 @@ public class PedidoService : IPedidoService
                 Telefone = pedido.Estabelecimento.Telefone,
                 Email = pedido.Estabelecimento.Email,
                 Whatsapp = pedido.Estabelecimento.Whatsapp,
+
                 Endereco = new GetEnderecoDTO
                 {
                     Bairro = pedido.Estabelecimento.Endereco.Bairro,
@@ -85,87 +111,46 @@ public class PedidoService : IPedidoService
                     Numero = pedido.Estabelecimento.Endereco.Numero,
                     Complemento = pedido.Estabelecimento.Endereco.Complemento
                 },
+
                 TaxaEntrega = pedido.Estabelecimento.TaxaEntrega,
                 PedidoMinimo = pedido.Estabelecimento.PedidoMinimo,
-                Status = pedido.Estabelecimento.EstabelecimentoStatus.Nome
+                Status = pedido.Estabelecimento.EstabelecimentoStatus?.Nome ?? "Desconhecido"
             },
+
             Usuario = new GetUsuarioDTO
             {
                 ClientKey = pedido.Usuario.ClientKey,
                 Nome = pedido.Usuario.Nome,
                 Telefone = pedido.Usuario.Telefone
             },
-            Produtos = pedido.Produtos.Select(p => new GetProdutoPedidoDTO
-            {
-                ProdutoId = p.ProdutoId,
-                Nome = p.Produto!.Nome,
-                Preco = p.PrecoUnitario,
-                Quantidade = p.Quantidade,
-                Subtotal = p.Subtotal
-            }).ToList()
+
+            Produtos = pedido.Produtos?
+                .Select(p => new GetProdutoPedidoDTO
+                {
+                    ProdutoId = p.ProdutoId,
+                    Nome = p.Produto?.Nome ?? "Produto",
+                    Preco = p.PrecoUnitario,
+                    Quantidade = p.Quantidade,
+                    Subtotal = p.Subtotal
+                })
+                .ToList() ?? new List<GetProdutoPedidoDTO>()
         };
     }
-    public async Task<List<GetPedidoDTO>> GetPedidosByClientKey(string clientKey, int estabelecimentoId)
+    public async Task<List<GetPedidoDTO>> GetPedidosByClientKey(
+       string clientKey,
+       int estabelecimentoId)
     {
         if (string.IsNullOrWhiteSpace(clientKey))
-            throw new ArgumentException("ClientKey inválido.", nameof(clientKey));
+            throw new ArgumentException("ClientKey inválido.");
 
         clientKey = clientKey.Trim().ToLower();
 
-        var pedidos = await _pedidoRepo.GetPedidosByClientKey(clientKey, estabelecimentoId);
+        var pedidos = await _pedidoRepo
+            .GetPedidosByClientKeyAsync(clientKey, estabelecimentoId);
 
-        return pedidos.Select(p => new GetPedidoDTO
-        {
-            Id = p.Id,
-            Endereco = new GetEnderecoDTO
-            {
-                Bairro = p.Endereco!.Bairro,
-                Rua = p.Endereco.Rua,
-                Cidade = p.Endereco.Cidade,
-                Uf = p.Endereco.Uf,
-                Cep = p.Endereco.Cep,
-                Numero = p.Endereco.Numero,
-                Complemento = p.Endereco.Complemento
-            },
-            Status = p.PedidoStatus.Nome,
-            MetodoPagamentoId = p.MetodoPagamentoId,
-            Estabelecimento = new GetEstabelecimentoDTO
-            {
-                Id = p.Estabelecimento!.Id,
-                Slug = p.Estabelecimento.Slug,
-                NomeFantasia = p.Estabelecimento.NomeFantasia,
-                Telefone = p.Estabelecimento.Telefone,
-                Email = p.Estabelecimento.Email,
-                Whatsapp = p.Estabelecimento.Whatsapp,
-                Endereco = new GetEnderecoDTO
-                {
-                    Bairro = p.Estabelecimento.Endereco.Bairro,
-                    Rua = p.Estabelecimento.Endereco.Rua,
-                    Cidade = p.Estabelecimento.Endereco.Cidade,
-                    Uf = p.Estabelecimento.Endereco.Uf,
-                    Cep = p.Estabelecimento.Endereco.Cep,
-                    Numero = p.Estabelecimento.Endereco.Numero,
-                    Complemento = p.Estabelecimento.Endereco.Complemento
-                },
-                TaxaEntrega = p.Estabelecimento.TaxaEntrega,
-                PedidoMinimo = p.Estabelecimento.PedidoMinimo,
-                Status = p.Estabelecimento.EstabelecimentoStatus.Nome
-            },
-            Usuario = new GetUsuarioDTO
-            {
-                Nome = p.Usuario!.Nome,
-                Telefone = p.Usuario.Telefone,
-                ClientKey = p.Usuario.ClientKey
-            },
-            Produtos = p.Produtos.Select(prod => new GetProdutoPedidoDTO
-            {
-                ProdutoId = prod.ProdutoId,
-                Nome = prod.Produto!.Nome,
-                Preco = prod.PrecoUnitario,
-                Quantidade = prod.Quantidade,
-                Subtotal = prod.Subtotal
-            }).ToList()
-        }).ToList();
+        return pedidos
+            .Select(MapToGetPedidoDTO)
+            .ToList();
     }
 
 }

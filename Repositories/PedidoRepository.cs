@@ -44,8 +44,13 @@ namespace comaagora.Repositories
         {
             return await _context.Produtos.FindAsync(id);
         }
+        public async Task<Models.PedidoStatus?> GetPedidoStatusByIdAsync(int id)
+        {
+            return await _context.PedidoStatus.FindAsync(id);
+        }
 
-        // Busca estabelecimento por ID
+
+        // Busca estabelecimento por ID 
         public async Task<Models.Estabelecimento?> GetEstabelecimentoByIdAsync(int id)
         {
             return await _context.Estabelecimentos.FindAsync(id);
@@ -57,23 +62,61 @@ namespace comaagora.Repositories
             _context.Enderecos.Add(endereco);
             await _context.SaveChangesAsync();
         }
+        public async Task<Pedido?> GetPedidoCompletoByIdAsync(int pedidoId)
+        {
+            return await _context.Pedidos
+                .AsNoTracking()
+                .Include(p => p.PedidoStatus)
 
+                .Include(p => p.Endereco)
+
+                .Include(p => p.Usuario)
+
+                .Include(p => p.Estabelecimento)
+                    .ThenInclude(e => e.Endereco)
+
+                .Include(p => p.Estabelecimento)
+                    .ThenInclude(e => e.EstabelecimentoStatus)
+
+                .Include(p => p.Produtos)
+                    .ThenInclude(pp => pp.Produto)
+
+                .FirstOrDefaultAsync(p => p.Id == pedidoId);
+        }
         // Adiciona usuário
         public async Task AddUsuarioAsync(Usuario usuario)
         {
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
         }
-        public async Task<List<Pedido>> GetPedidosByClientKey(string clientKey, int estId)
+        public async Task<List<Pedido>> GetPedidosByClientKeyAsync(
+            string clientKey,
+            int estabelecimentoId)
         {
             return await _context.Pedidos
-                .Include(p => p.Estabelecimento) // OBRIGATÓRIO
-                .Include(p => p.Usuario)         // OBRIGATÓRIO
-                .Include(p => p.Endereco)        // OBRIGATÓRIO
-                .Include(p => p.Produtos)        // OBRIGATÓRIO
+                .AsNoTracking()
+
+                .Include(p => p.PedidoStatus)
+
+                .Include(p => p.Endereco)
+
+                .Include(p => p.Usuario)
+
+                .Include(p => p.Estabelecimento)
+                    .ThenInclude(e => e.Endereco)
+
+                .Include(p => p.Estabelecimento)
+                    .ThenInclude(e => e.EstabelecimentoStatus)
+
+                .Include(p => p.Produtos)
                     .ThenInclude(pp => pp.Produto)
-                .Where(p => p.Usuario!.ClientKey == clientKey && p.EstabelecimentoId == estId)
-                .OrderByDescending(p => p.CreatedAt)
+
+                .Where(p =>
+                    p.Usuario.ClientKey == clientKey &&
+                    p.EstabelecimentoId == estabelecimentoId)
+
+                .OrderByDescending(p => p.Id)
+
                 .ToListAsync();
         }
 
