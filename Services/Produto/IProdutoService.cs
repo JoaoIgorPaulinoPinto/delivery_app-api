@@ -7,5 +7,6 @@ namespace comaagora.Services.Produto
     {
         public Task<List<GetProdutoDTO>> GetAll(int estabelecimentoId);
         public Task<GetProdutoDTO> GetByID(int id,int estabelecimentoId);
+        public Task<GetProdutoDTO> Update(CreateProdutoDTO produto, int id);
     }
 }

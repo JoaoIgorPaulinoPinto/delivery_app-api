@@ -34,13 +34,13 @@ namespace comaagora.Models
         public int CategoriaId { get; set; }
 
         [Required]
-        public int StatusId { get; set; }
+        public int ProdutoStatusId { get; set; }
 
         [ForeignKey(nameof(CategoriaId))]
         public ProdutoCategoria Categoria { get; set; } = null!;
 
-        [ForeignKey(nameof(StatusId))]
-        public Status Status { get; set; } = null!;
+        [ForeignKey(nameof(ProdutoStatusId))]
+        public ProdutoStatus Status { get; set; } = null!;
 
         [ForeignKey(nameof(EstabelecimentoId))]
         public Estabelecimento Estabelecimento { get; set; } = null!;

@@ -47,5 +47,23 @@ namespace comaagora.Services.Produto
                 Status = p.Status?.Nome ?? string.Empty,
             };
         }
+        public async Task<GetProdutoDTO> Update(CreateProdutoDTO produto, int id)
+        {
+            var p = await _repository.UpdateAsync(produto, id);
+
+            if (p == null)
+                throw new KeyNotFoundException("Produto não encontrado");
+
+            return new GetProdutoDTO
+            {
+                Id = p.Id,
+                Nome = p.Nome,
+                Preco = p.Preco,
+                Descricao = p.Descricao,
+                ImgUrl = p.ImgUrl,
+                Categoria = p.Categoria?.Nome ?? string.Empty,
+                Status = p.Status?.Nome ?? string.Empty,
+            };
+        }
     }
 }

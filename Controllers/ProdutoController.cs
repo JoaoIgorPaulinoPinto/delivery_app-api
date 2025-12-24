@@ -1,4 +1,5 @@
 ﻿using comaagora.Data;
+using comaagora.DTO;
 using comaagora.Models;
 using comaagora.Services.Produto;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,18 @@ namespace comaagora.Controllers
             try
             {
                 return Ok(await _produtoService.GetByID(id, estabelecimentoId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut("Update")]
+        public async Task<IActionResult> UpdateProduto(CreateProdutoDTO produto, int id)
+        {
+            try
+            {
+                return Ok(await _produtoService.Update(produto, id));
             }
             catch (Exception ex)
             {
