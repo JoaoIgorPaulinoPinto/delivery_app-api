@@ -89,7 +89,7 @@ public class PedidoService : IPedidoService
                 Complemento = pedido.Endereco.Complemento
             },
 
-            Status = pedido.PedidoStatus?.Nome ?? "Desconhecido",
+            Status = pedido.PedidoStatus,
             MetodoPagamentoId = pedido.MetodoPagamentoId,
 
             Estabelecimento = new GetEstabelecimentoDTO
@@ -153,4 +153,27 @@ public class PedidoService : IPedidoService
             .ToList();
     }
 
+    public async Task<List<GetPedidoDTO>> GetPedidos(int estabelecimentoId)
+    {
+        if (estabelecimentoId is < 0)
+            throw new ArgumentException("Estabelecimento inválido.");
+
+        var pedidos = await _pedidoRepo
+            .GetPedidosByStablishmentId(estabelecimentoId);
+
+        return pedidos
+            .Select(MapToGetPedidoDTO)
+            .ToList();
+    }
+    public async Task<bool> UpdateOrderStatus(int pedidoId, int statusId)
+    {
+            Pedido? pedido = await _pedidoRepo.GetPedidoCompletoByIdAsync(pedidoId);
+            if(pedido == null)
+            {
+                throw new Exception("Pedido não encontrado");
+            }
+            return await _pedidoRepo.UpdateOrderStatus(pedidoId,  statusId);
+
+
+    }
 }

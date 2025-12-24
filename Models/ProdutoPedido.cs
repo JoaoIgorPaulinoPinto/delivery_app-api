@@ -37,8 +37,5 @@ namespace comaagora.Models
 
         [ForeignKey(nameof(PedidoId))]
         public Pedido Pedido { get; set; } = null!;
-
-        [ForeignKey(nameof(EstabelecimentoId))]
-        public Estabelecimento Estabelecimento { get; set; } = null!;
     }
 }

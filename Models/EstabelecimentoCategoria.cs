@@ -23,6 +23,6 @@ namespace comaagora.Models
         public int EstabelecimentoId { get; set; }
 
         [ForeignKey(nameof(EstabelecimentoId))]
-        public Estabelecimento Estabelecimento { get; set; } = null!;
+        public EnderecoEstabelecimento Estabelecimento { get; set; } = null!;
     }
 }

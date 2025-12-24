@@ -37,21 +37,16 @@ namespace comaagora.Data
                         .ValueGeneratedOnAddOrUpdate();
                 }
             }
-            modelBuilder.Entity<Estabelecimento>()
-            .HasOne(e => e.Endereco)
-            .WithOne()
-            .HasForeignKey<Estabelecimento>(e => e.EnderecoId)
-            .OnDelete(DeleteBehavior.Cascade); 
-            modelBuilder.Entity<Estabelecimento>()
-            .HasOne(e => e.Endereco)
-            .WithOne(e => e.Estabelecimento)
-            .HasForeignKey<Estabelecimento>(e => e.EnderecoId)
-            .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Pedido>()
-            .HasOne(p => p.MetodoPagamento)
-            .WithMany(mp => mp.Pedidos)
-            .HasForeignKey(p => p.MetodoPagamentoId)
-            .OnDelete(DeleteBehavior.Restrict);
+             .HasOne(p => p.MetodoPagamento)
+             .WithMany(mp => mp.Pedidos)
+             .HasForeignKey(p => p.MetodoPagamentoId)
+             .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Pedido>()
+                .HasOne(p => p.Endereco)
+                .WithOne(e => e.Pedido)
+                .HasForeignKey<Pedido>(p => p.EnderecoId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
 

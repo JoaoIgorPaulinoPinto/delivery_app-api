@@ -12,12 +12,10 @@ namespace comaagora.Models
         [MaxLength(20)]
         public string Nome { get; set; } = null!;
         // Exemplo: "Pendente", "Preparando", "Entregue", "Cancelado"
-
         [Required]
-        [MaxLength(20)]
-        public string Codigo { get; set; } = null!;
-        // Exemplo: "pendente", "preparando", "entregue", "cancelado"
-
+        public int StatusId { get; set; }
+        [Required]
+        public Status Status { get; set; } = new();
         public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
     }
 }

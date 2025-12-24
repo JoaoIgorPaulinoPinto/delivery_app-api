@@ -15,7 +15,6 @@ public class EnderecoService: IEnderecoService
             Uf = dto.Uf,
             Cep = dto.Cep,
             Complemento = dto.Complemento,
-            EstabelecimentoId = estabelecimentoId
         };
     }
 }

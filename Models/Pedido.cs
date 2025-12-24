@@ -12,8 +12,7 @@ namespace comaagora.Models
         [Required]
         public int EstabelecimentoId { get; set; }
 
-        [Required]
-        public int EnderecoId { get; set; }
+
 
         [Required]
         public int PedidoStatusId { get; set; }
@@ -30,7 +29,8 @@ namespace comaagora.Models
         [ForeignKey(nameof(EstabelecimentoId))]
         public Estabelecimento Estabelecimento { get; set; } = null!;
 
-        [ForeignKey(nameof(EnderecoId))]
+        [Required]
+        public int EnderecoId { get; set; }
         public Endereco Endereco { get; set; } = null!;
 
         [ForeignKey(nameof(UsuarioId))]

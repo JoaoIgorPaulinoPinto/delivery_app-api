@@ -26,6 +26,31 @@ namespace comaagora.Repositories
             _context.ProdutoPedidos.AddRange(produtos);
             await _context.SaveChangesAsync();
         }
+        // Atualiza o Status do Pedido
+        public async Task<bool> UpdateOrderStatus(int orderId, int statusId)
+        {
+            // Busca o pedido
+            var pedido = await _context.Pedidos
+                .Include(p => p.Produtos)
+                .ThenInclude(pp => pp.Produto)
+                .Include(p => p.Usuario)
+                .Include(p => p.Estabelecimento)
+                .FirstOrDefaultAsync(p => p.Id == orderId);
+
+            if (pedido == null)
+                return false; // não encontrado
+
+            // Atualiza o status (se for enum ou string, ajuste conforme seu modelo)
+            pedido.PedidoStatus.Id = statusId;   // se você tiver StatusId
+                                          // ou: pedido.Status = "Em preparo"; // se for string
+
+            // Marca como modificado e salva
+            _context.Pedidos.Update(pedido);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
 
         // Busca pedido por ID e estabelecimento
         public async Task<Pedido?> GetByIdAsync(int id, int estabelecimentoId)
@@ -113,6 +138,34 @@ namespace comaagora.Repositories
 
                 .Where(p =>
                     p.Usuario.ClientKey == clientKey &&
+                    p.EstabelecimentoId == estabelecimentoId)
+
+                .OrderByDescending(p => p.Id)
+
+                .ToListAsync();
+        }
+        public async Task<List<Pedido>> GetPedidosByStablishmentId(
+                  int estabelecimentoId)
+        {
+            return await _context.Pedidos
+                .AsNoTracking()
+
+                .Include(p => p.PedidoStatus)
+
+                .Include(p => p.Endereco)
+
+                .Include(p => p.Usuario)
+
+                .Include(p => p.Estabelecimento)
+                    .ThenInclude(e => e.Endereco)
+
+                .Include(p => p.Estabelecimento)
+                    .ThenInclude(e => e.EstabelecimentoStatus)
+
+                .Include(p => p.Produtos)
+                    .ThenInclude(pp => pp.Produto)
+
+                .Where(p =>
                     p.EstabelecimentoId == estabelecimentoId)
 
                 .OrderByDescending(p => p.Id)

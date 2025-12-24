@@ -23,7 +23,7 @@ namespace comaagora.Models
 
         [Required]
         [StringLength(18)]
-        [RegularExpression(@"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$", ErrorMessage = "CNPJ inválido. Formato esperado: 00.000.000/0000-00")]
+        //[RegularExpression(@"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$", ErrorMessage = "CNPJ inválido. Formato esperado: 00.000.000/0000-00")]
         public string Cnpj { get; set; } = null!;
 
         [Required]

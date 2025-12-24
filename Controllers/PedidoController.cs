@@ -11,7 +11,7 @@ public class PedidoController : ControllerBase
     {
         _pedidoService = pedidoService;
     }
-    [HttpPost]
+    [HttpPost("Criar")]
     public async Task<IActionResult> Create(
         [FromHeader] int estabelecimentoId,
         [FromQuery] string? clientKey,
@@ -26,14 +26,40 @@ public class PedidoController : ControllerBase
             });
     }
 
-    [HttpGet]
+    [HttpGet("Cliente")]
     public async Task<IActionResult> GetByClientKey([FromHeader] string clientKey, [FromHeader] int estabelecimentoId)
     {
         try
         {
             return Ok(await _pedidoService.GetPedidosByClientKey(clientKey, estabelecimentoId));
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [HttpGet("Estabelecimento")]
+
+    public async Task<IActionResult> GetPedidos([FromHeader] int estabelecimentoId)
+    {
+        try
+        {
+            return Ok(await _pedidoService.GetPedidos(estabelecimentoId));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [HttpPut("Status")]
+    public async Task<IActionResult> UpdateOrderStatus(int pedidoId, int statusId)
+    {
+        try
+        {
+            return Ok(await _pedidoService.UpdateOrderStatus(pedidoId, statusId));
+        }
+        catch (Exception ex)
+        {
             return BadRequest(ex.Message);
         }
     }

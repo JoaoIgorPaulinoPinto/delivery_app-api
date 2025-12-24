@@ -16,7 +16,7 @@ namespace comaagora.DTO
     {
         public int Id { get; set; }
         public GetEnderecoDTO Endereco { get; set; } = new();
-        public string Status { get; set; } = "";
+        public PedidoStatus Status { get; set; } = new();
         public int MetodoPagamentoId { get; set; }
         public GetEstabelecimentoDTO Estabelecimento { get; set; } = new();
         public GetUsuarioDTO Usuario { get; set; } = new();
