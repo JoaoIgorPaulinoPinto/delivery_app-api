@@ -1,14 +1,18 @@
-﻿using comaagora.DTO;
+﻿using comaagora.Data;
+using comaagora.DTO;
 using comaagora.Services.Pedido;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("[controller]")]
 public class PedidoController : ControllerBase
 {
     private readonly IPedidoService _pedidoService;
-    public PedidoController (IPedidoService pedidoService)
+    private readonly AppDbContext _context;
+    public PedidoController (AppDbContext context,IPedidoService pedidoService)
     {
+        _context = context;
         _pedidoService = pedidoService;
     }
     [HttpPost("Criar")]
@@ -52,15 +56,26 @@ public class PedidoController : ControllerBase
         }
     }
     [HttpPut("Status")]
-    public async Task<IActionResult> UpdateOrderStatus(int pedidoId, int statusId)
+    public async Task<IActionResult> UpdateOrderStatus([FromBody] UpdatePedidoStatus dto)
     {
         try
         {
-            return Ok(await _pedidoService.UpdateOrderStatus(pedidoId, statusId));
+            return Ok(await _pedidoService.UpdateOrderStatus(dto.pedidoId, dto.statusId));
         }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
+    }
+    [HttpGet("Status")]
+    public ActionResult GetPedidoStatus([FromHeader] int EstabelecimentoId)
+    {
+        return Ok(_context.PedidoStatus.AsNoTracking()
+            .Where(e => e.EstabelecimentoId == EstabelecimentoId)
+            .Select(c => new ProdutoCategoriaDTO
+            {
+                Id = c.Id,
+                Nome = c.Nome ?? "",
+            }).ToList());
     }
 }

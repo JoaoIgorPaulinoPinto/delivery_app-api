@@ -44,9 +44,11 @@ namespace comaagora.Data
              .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Pedido>()
                 .HasOne(p => p.Endereco)
-                .WithOne(e => e.Pedido)
+                .WithOne()
                 .HasForeignKey<Pedido>(p => p.EnderecoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
 
         }
 

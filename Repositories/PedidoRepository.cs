@@ -29,22 +29,18 @@ namespace comaagora.Repositories
         // Atualiza o Status do Pedido
         public async Task<bool> UpdateOrderStatus(int orderId, int statusId)
         {
-            // Busca o pedido
+            // 1. Fetch the order
             var pedido = await _context.Pedidos
-                .Include(p => p.Produtos)
-                .ThenInclude(pp => pp.Produto)
-                .Include(p => p.Usuario)
-                .Include(p => p.Estabelecimento)
                 .FirstOrDefaultAsync(p => p.Id == orderId);
 
             if (pedido == null)
-                return false; // não encontrado
+                return false;
 
-            // Atualiza o status (se for enum ou string, ajuste conforme seu modelo)
-            pedido.PedidoStatus.Id = statusId;   // se você tiver StatusId
-                                          // ou: pedido.Status = "Em preparo"; // se for string
+            // 2. Update the Foreign Key directly
+            // Replace 'PedidoStatusId' with the actual FK name in your Pedido class
+            pedido.PedidoStatusId = statusId;
 
-            // Marca como modificado e salva
+            // 3. Save changes
             _context.Pedidos.Update(pedido);
             await _context.SaveChangesAsync();
 

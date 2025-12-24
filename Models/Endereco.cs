@@ -36,7 +36,5 @@ namespace comaagora.Models
 
         [MaxLength(100)]
         public string? Complemento { get; set; }
-
-        public Pedido Pedido { get; set; } = null!;
     }
 }

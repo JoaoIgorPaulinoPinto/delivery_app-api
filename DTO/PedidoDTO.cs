@@ -16,12 +16,17 @@ namespace comaagora.DTO
     {
         public int Id { get; set; }
         public GetEnderecoDTO Endereco { get; set; } = new();
-        public PedidoStatus Status { get; set; } = new();
+        public PedidoStatusDTO Status { get; set; } = new();
         public int MetodoPagamentoId { get; set; }
+        public string Observacao { get; set; } = "";
         public GetEstabelecimentoDTO Estabelecimento { get; set; } = new();
         public GetUsuarioDTO Usuario { get; set; } = new();
         public List<GetProdutoPedidoDTO> Produtos { get; set; } = new();
         public List<HorarioFuncionamento> HorariosFuncionamento { get; set; } = new();
     }
-
+    public class UpdatePedidoStatus
+    {
+        public int pedidoId { get; set; }
+        public int statusId { get; set; }
+    }
 }

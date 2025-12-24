@@ -71,6 +71,7 @@ namespace comaagora.Models
         public ICollection<Status> Status { get; set; } = new List<Status>();
         public ICollection<Produto> Produtos { get; set; } = new List<Produto>();
         public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+        public ICollection<PedidoStatus> PedidoStatus { get; set; } = new List<PedidoStatus>();
         public ICollection<ProdutoPedido> ProdutosPedido { get; set; } = new List<ProdutoPedido>();
         public ICollection<EstabelecimentoCategoria> Categorias { get; set; } = new List<EstabelecimentoCategoria>();
         public ICollection<ProdutoCategoria> ProdutoCategorias { get; set; } = new List<ProdutoCategoria>();

@@ -89,8 +89,9 @@ public class PedidoService : IPedidoService
                 Complemento = pedido.Endereco.Complemento
             },
 
-            Status = pedido.PedidoStatus,
+            Status = new PedidoStatusDTO { id= pedido.PedidoStatus.Id, nome = pedido.PedidoStatus.Nome},
             MetodoPagamentoId = pedido.MetodoPagamentoId,
+            Observacao = pedido.Observacao,
 
             Estabelecimento = new GetEstabelecimentoDTO
             {
@@ -167,13 +168,6 @@ public class PedidoService : IPedidoService
     }
     public async Task<bool> UpdateOrderStatus(int pedidoId, int statusId)
     {
-            Pedido? pedido = await _pedidoRepo.GetPedidoCompletoByIdAsync(pedidoId);
-            if(pedido == null)
-            {
-                throw new Exception("Pedido não encontrado");
-            }
             return await _pedidoRepo.UpdateOrderStatus(pedidoId,  statusId);
-
-
     }
 }

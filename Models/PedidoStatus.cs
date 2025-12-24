@@ -17,5 +17,9 @@ namespace comaagora.Models
         [Required]
         public Status Status { get; set; } = new();
         public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+   
+        public int EstabelecimentoId { get; set; }
+        public Estabelecimento Estabelecimento { get; set; }
     }
+
 }
