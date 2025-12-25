@@ -17,13 +17,22 @@ namespace comaagora.Repositories
         // Busca todos os produtos de um estabelecimento
         public async Task<List<Produto>> GetAllByEstabelecimentoAsync(int estabelecimentoId)
         {
-            return await _context.Produtos
+            // 1. Atualize o Include para ProdutoStatus
+            // 2. Se quiser acessar o Status original, faça um ThenInclude
+            var produtos = await _context.Produtos
                 .Include(p => p.Categoria)
-                .Include(p => p.Status)
-                .Include(p => p.Estabelecimento)
+                .Include(p => p.Status) // Nova tabela
                 .AsNoTracking()
                 .Where(p => p.EstabelecimentoId == estabelecimentoId)
                 .ToListAsync();
+
+            if (produtos.Any())
+            {
+                return produtos;
+            }
+
+            // Use string interpolation para evitar erro de concatenação sem espaço
+            throw new Exception($"Produtos do estabelecimento {estabelecimentoId} não encontrados");
         }
 
         // Busca produto por ID e estabelecimento
@@ -37,30 +46,28 @@ namespace comaagora.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id && p.EstabelecimentoId == estabelecimentoId);
         }
         // Atualiza o produto com base no ID
-        public async Task<Produto?> UpdateAsync(CreateProdutoDTO produto, int id)
+        public async Task<bool> UpdateAsync(CreateProdutoDTO dto, int id)
         {
-            Produto? produtoEncontrado = await _context.Produtos
-                .Include(p => p.Categoria)
-                .Include(p => p.Status)
-                .Include(p => p.Estabelecimento)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.EstabelecimentoId == id);
-            if (produtoEncontrado != null) {
-                Produto produtoAtualizado = new Produto
-                {
-                    Nome = produto.Nome,
-                    Descricao = produto.Descricao,
-                    ImgUrl = produto.ImgUrl,
-                    Preco = produto.Preco,
-                    CategoriaId = produto.CategoriaId,
-                    ProdutoStatusId = produto.StatusId
-                };
-                return produtoAtualizado;
-            }
-            else
-            {
-                throw new NotImplementedException("Produto não encontrado na base de dados");
-            }
+            var produtoEncontrado = await _context.Produtos
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (produtoEncontrado == null) return false;
+
+            produtoEncontrado.Nome = dto.Nome;
+            produtoEncontrado.Descricao = dto.Descricao;
+            produtoEncontrado.ImgUrl = dto.ImgUrl;
+            produtoEncontrado.Preco = dto.Preco;
+            produtoEncontrado.CategoriaId = dto.CategoriaId;
+            produtoEncontrado.ProdutoStatusId = dto.StatusId;
+
+            await _context.SaveChangesAsync();
+            return (true);
+        }
+        public async Task<bool> CreateAsync(Produto produto, int id)
+        {
+            _context.Produtos.Add(produto);
+            await _context.SaveChangesAsync();
+            return (true);
         }
     }
 }

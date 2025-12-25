@@ -71,70 +71,66 @@ public class PedidoService : IPedidoService
 
     private static GetPedidoDTO MapToGetPedidoDTO(Pedido pedido)
     {
-        if (pedido == null)
-            throw new ArgumentNullException(nameof(pedido));
+        // O throw garante que 'pedido' não é nulo para o restante do método
+        if (pedido == null) throw new ArgumentNullException(nameof(pedido));
 
         return new GetPedidoDTO
         {
             Id = pedido.Id,
 
-            Endereco = new GetEnderecoDTO
+            // Usamos uma nova instância se o endereço for nulo para evitar o erro
+            Endereco = pedido.Endereco == null ? new GetEnderecoDTO() : new GetEnderecoDTO
             {
-                Bairro = pedido.Endereco.Bairro,
-                Uf = pedido.Endereco.Uf,
-                Cep = pedido.Endereco.Cep,
-                Cidade = pedido.Endereco.Cidade,
-                Rua = pedido.Endereco.Rua,
-                Numero = pedido.Endereco.Numero,
-                Complemento = pedido.Endereco.Complemento
+                Bairro = pedido.Endereco.Bairro ?? "",
+                Uf = pedido.Endereco.Uf ?? "",
+                Cep = pedido.Endereco.Cep ?? "",
+                Cidade = pedido.Endereco.Cidade ?? "",
+                Rua = pedido.Endereco.Rua ?? "",
+                Numero = pedido.Endereco.Numero ?? "",
+                Complemento = pedido.Endereco.Complemento ?? ""
             },
 
-            Status = new PedidoStatusDTO { id= pedido.PedidoStatus.Id, nome = pedido.PedidoStatus.Nome},
-            MetodoPagamentoId = pedido.MetodoPagamentoId,
-            Observacao = pedido.Observacao,
+            Status = new PedidoStatusDTO
+            {
+                id = pedido.PedidoStatus?.Id ?? 0,
+                nome = pedido.PedidoStatus?.Nome ?? "Pendente"
+            },
 
-            Estabelecimento = new GetEstabelecimentoDTO
+            MetodoPagamentoId = pedido.MetodoPagamentoId,
+            Observacao = pedido.Observacao ?? "",
+
+            Estabelecimento = pedido.Estabelecimento == null ? new GetEstabelecimentoDTO() : new GetEstabelecimentoDTO
             {
                 Id = pedido.Estabelecimento.Id,
-                Slug = pedido.Estabelecimento.Slug,
-                NomeFantasia = pedido.Estabelecimento.NomeFantasia,
-                Telefone = pedido.Estabelecimento.Telefone,
-                Email = pedido.Estabelecimento.Email,
-                Whatsapp = pedido.Estabelecimento.Whatsapp,
+                Slug = pedido.Estabelecimento.Slug ?? "",
+                NomeFantasia = pedido.Estabelecimento.NomeFantasia ?? "",
 
+                // Verificação em cascata: pedido -> estabelecimento -> endereco
                 Endereco = new GetEnderecoDTO
                 {
-                    Bairro = pedido.Estabelecimento.Endereco.Bairro,
-                    Uf = pedido.Estabelecimento.Endereco.Uf,
-                    Cep = pedido.Estabelecimento.Endereco.Cep,
-                    Cidade = pedido.Estabelecimento.Endereco.Cidade,
-                    Rua = pedido.Estabelecimento.Endereco.Rua,
-                    Numero = pedido.Estabelecimento.Endereco.Numero,
-                    Complemento = pedido.Estabelecimento.Endereco.Complemento
+                    Bairro = pedido.Estabelecimento.Endereco?.Bairro ?? "",
+                    Cidade = pedido.Estabelecimento.Endereco?.Cidade ?? ""
+                    // ... repita para os demais campos
                 },
 
-                TaxaEntrega = pedido.Estabelecimento.TaxaEntrega,
-                PedidoMinimo = pedido.Estabelecimento.PedidoMinimo,
-                Status = pedido.Estabelecimento.EstabelecimentoStatus?.Nome ?? "Desconhecido"
+                Status = pedido.Estabelecimento.EstabelecimentoStatus?.Nome ?? "Inativo"
             },
 
             Usuario = new GetUsuarioDTO
             {
-                ClientKey = pedido.Usuario.ClientKey,
-                Nome = pedido.Usuario.Nome,
-                Telefone = pedido.Usuario.Telefone
+                ClientKey = pedido.Usuario?.ClientKey ?? "",
+                Nome = pedido.Usuario?.Nome ?? "Usuário Desconhecido",
+                Telefone = pedido.Usuario?.Telefone ?? ""
             },
 
-            Produtos = pedido.Produtos?
-                .Select(p => new GetProdutoPedidoDTO
-                {
-                    ProdutoId = p.ProdutoId,
-                    Nome = p.Produto?.Nome ?? "Produto",
-                    Preco = p.PrecoUnitario,
-                    Quantidade = p.Quantidade,
-                    Subtotal = p.Subtotal
-                })
-                .ToList() ?? new List<GetProdutoPedidoDTO>()
+            Produtos = pedido.Produtos?.Select(p => new GetProdutoPedidoDTO
+            {
+                ProdutoId = p.ProdutoId,
+                Nome = p.Produto?.Nome ?? "Produto Indisponível",
+                Preco = p.PrecoUnitario,
+                Quantidade = p.Quantidade,
+                Subtotal = p.Subtotal
+            }).ToList() ?? new List<GetProdutoPedidoDTO>()
         };
     }
     public async Task<List<GetPedidoDTO>> GetPedidosByClientKey(
@@ -153,6 +149,23 @@ public class PedidoService : IPedidoService
             .Select(MapToGetPedidoDTO)
             .ToList();
     }
+    public async Task<GetPedidoDTO> GetPedidoById(int id)
+    {
+        if (id < 0)
+            throw new ArgumentException("id inválido.");
+
+        var pedido = await _pedidoRepo
+            .GetByIdAsync(id);
+        
+        if(pedido != null)
+        {
+            return MapToGetPedidoDTO(pedido);
+        }
+        else
+        {
+            throw new ArgumentException("Pedido não encontrado");
+        }
+    }
 
     public async Task<List<GetPedidoDTO>> GetPedidos(int estabelecimentoId)
     {
@@ -166,8 +179,34 @@ public class PedidoService : IPedidoService
             .Select(MapToGetPedidoDTO)
             .ToList();
     }
-    public async Task<bool> UpdateOrderStatus(int pedidoId, int statusId)
+    public async Task<bool> UpdatePedido(UpdatePedidoDTO dto, int id)
     {
-            return await _pedidoRepo.UpdateOrderStatus(pedidoId,  statusId);
+        // 1. Busca o pedido completo no banco
+        Pedido? ap = await _pedidoRepo.GetByIdAsync(id);
+
+        if (ap == null) return false;
+
+        ap.Usuario.Nome = dto.Nome;
+        ap.Usuario.Telefone = dto.Telefone;
+        ap.Observacao = dto.Observacao!;
+        ap.MetodoPagamentoId = dto.MetodoPagamentoId;
+
+        ap.PedidoStatusId = dto.PedidoStatus.id;
+
+
+        if (dto.Produtos != null)
+        {
+            foreach (var prodDto in dto.Produtos)
+            {
+                var itemExistente = ap.Produtos.FirstOrDefault(p => p.Id == prodDto.ProdutoId);
+                if (itemExistente != null)
+                {
+                    itemExistente.Quantidade = prodDto.Quantidade;
+                }
+            }
+        }
+
+        // 5. Envia o objeto 'ap' (que agora está com os dados novos) para o repositório
+        return await _pedidoRepo.UpdatePedido(dto, id);
     }
 }

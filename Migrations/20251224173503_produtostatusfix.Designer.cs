@@ -12,8 +12,8 @@ using comaagora.Data;
 namespace comaagora.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251224165816_createEndPointUpdateProduto")]
-    partial class createEndPointUpdateProduto
+    [Migration("20251224173503_produtostatusfix")]
+    partial class produtostatusfix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -944,7 +944,7 @@ namespace comaagora.Migrations
             modelBuilder.Entity("comaagora.Models.ProdutoStatus", b =>
                 {
                     b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
-                        .WithMany()
+                        .WithMany("ProdutosStatus")
                         .HasForeignKey("EstabelecimentoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1007,6 +1007,8 @@ namespace comaagora.Migrations
                     b.Navigation("Produtos");
 
                     b.Navigation("ProdutosPedido");
+
+                    b.Navigation("ProdutosStatus");
 
                     b.Navigation("Status");
                 });

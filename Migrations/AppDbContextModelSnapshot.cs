@@ -941,7 +941,7 @@ namespace comaagora.Migrations
             modelBuilder.Entity("comaagora.Models.ProdutoStatus", b =>
                 {
                     b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
-                        .WithMany()
+                        .WithMany("ProdutosStatus")
                         .HasForeignKey("EstabelecimentoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1004,6 +1004,8 @@ namespace comaagora.Migrations
                     b.Navigation("Produtos");
 
                     b.Navigation("ProdutosPedido");
+
+                    b.Navigation("ProdutosStatus");
 
                     b.Navigation("Status");
                 });

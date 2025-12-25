@@ -19,6 +19,7 @@ namespace comaagora.Data
         public DbSet<Endereco> Enderecos { get; set; }
         public DbSet<MetodoPagamento> MetodoPagamento { get; set; }
         public DbSet<PedidoStatus> PedidoStatus { get; set; }
+        public DbSet<ProdutoStatus> ProdutoStatus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

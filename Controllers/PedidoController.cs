@@ -1,5 +1,6 @@
 ﻿using comaagora.Data;
 using comaagora.DTO;
+using comaagora.Services.Produto;
 using comaagora.Services.Pedido;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -42,8 +43,19 @@ public class PedidoController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    [HttpGet("Cliente/Id")]
+    public async Task<IActionResult> GetById([FromQuery]int id)
+    {
+        try
+        {
+            return Ok(await _pedidoService.GetPedidoById(id));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
     [HttpGet("Estabelecimento")]
-
     public async Task<IActionResult> GetPedidos([FromHeader] int estabelecimentoId)
     {
         try
@@ -55,16 +67,20 @@ public class PedidoController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    [HttpPut("Status")]
-    public async Task<IActionResult> UpdateOrderStatus([FromBody] UpdatePedidoStatus dto)
+    [HttpPut("Update")]
+    public async Task<IActionResult> UpdatePedido([FromBody] UpdatePedidoDTO dto, [FromQuery] int id)
     {
         try
         {
-            return Ok(await _pedidoService.UpdateOrderStatus(dto.pedidoId, dto.statusId));
+            var sucesso = await _pedidoService.UpdatePedido(dto, id);
+
+            if (!sucesso) return NotFound(new { message = "Pedido não encontrado" });
+
+            return Ok(true);
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new { error = ex.Message });
         }
     }
     [HttpGet("Status")]

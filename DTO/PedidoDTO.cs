@@ -11,6 +11,16 @@ namespace comaagora.DTO
         public int MetodoPagamentoId { get; set; }
         public string? Observacao { get; set; }
     }
+    public class UpdatePedidoDTO
+    {
+        public string Telefone { get; set; } = "";
+        public string Nome { get; set; } = "";
+        public List<CreateProdutoPedidoDTO> Produtos { get; set; } = new();
+        public int MetodoPagamentoId { get; set; }
+        public CreateEnderecoDTO Endereco { get; set; } = new();
+        public PedidoStatusDTO PedidoStatus { get; set; } = new();
+        public string? Observacao { get; set; }
+    }
 
     public class GetPedidoDTO
     {
@@ -28,5 +38,10 @@ namespace comaagora.DTO
     {
         public int pedidoId { get; set; }
         public int statusId { get; set; }
+    }
+    public class PedidoStatusDTO
+    {
+        public int id { get; set; }
+        public string nome { get; set; } = "";
     }
 }

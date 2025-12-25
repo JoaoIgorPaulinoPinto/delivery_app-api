@@ -1,4 +1,5 @@
 ﻿using comaagora.Data;
+using comaagora.DTO;
 using comaagora.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,40 +28,59 @@ namespace comaagora.Repositories
             await _context.SaveChangesAsync();
         }
         // Atualiza o Status do Pedido
-        public async Task<bool> UpdateOrderStatus(int orderId, int statusId)
+        public async Task<bool> UpdatePedido(UpdatePedidoDTO dto, int id)
         {
-            // 1. Fetch the order
-            var pedido = await _context.Pedidos
-                .FirstOrDefaultAsync(p => p.Id == orderId);
+            // 1. Busca o pedido real com todos os relacionamentos
+            var pedidoNoBanco = await _context.Pedidos
+                .Include(p => p.Usuario)
+                .Include(p => p.Endereco)
+                .Include(p => p.Produtos)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (pedido == null)
-                return false;
+            if (pedidoNoBanco == null) return false;
 
-            // 2. Update the Foreign Key directly
-            // Replace 'PedidoStatusId' with the actual FK name in your Pedido class
-            pedido.PedidoStatusId = statusId;
+            // 2. Atualiza os dados simples
+            pedidoNoBanco.Usuario.Nome = dto.Nome;
+            if (dto.PedidoStatus != null)
+            {
+                // Atribua apenas se o ID for diferente, para evitar marcações desnecessárias de "Modified"
+                if (pedidoNoBanco.PedidoStatusId != dto.PedidoStatus.id)
+                {
+                    pedidoNoBanco.PedidoStatusId = dto.PedidoStatus.id;
+                }
+            }
+            pedidoNoBanco.Endereco.Rua = dto.Endereco.Rua;
+            pedidoNoBanco.Endereco.Numero = dto.Endereco.Numero;
+            pedidoNoBanco.Endereco.Cidade = dto.Endereco.Cidade;
+            pedidoNoBanco.Endereco.Bairro = dto.Endereco.Bairro;
+            pedidoNoBanco.Endereco.Uf = dto.Endereco.Uf;
 
-            // 3. Save changes
-            _context.Pedidos.Update(pedido);
-            await _context.SaveChangesAsync();
+            // 3. Sincroniza os Produtos (Atualiza quantidades)
+            if (dto.Produtos != null)
+            {
+                foreach (var prodDto in dto.Produtos)
+                {
+                    var itemBanco = pedidoNoBanco.Produtos.FirstOrDefault(p => p.Id == prodDto.ProdutoId);
+                    if (itemBanco != null)
+                    {
+                        itemBanco.Quantidade = prodDto.Quantidade;
+                    }
+                }
+            }
 
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
-
-
-        // Busca pedido por ID e estabelecimento
-        public async Task<Pedido?> GetByIdAsync(int id, int estabelecimentoId)
+        public async Task<Pedido?> GetByIdAsync(int id)
         {
             return await _context.Pedidos
                 .Include(p => p.Produtos)
                  .ThenInclude(pp => pp.Produto)
                 .Include(p => p.Usuario)
+                .Include(p => p.PedidoStatus)
                 .Include(p => p.Estabelecimento)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == id && p.EstabelecimentoId == estabelecimentoId);
+                .FirstOrDefaultAsync(p => p.Id == id );
         }
 
-        // Busca produto por ID
         public async Task<Models.Produto?> GetProdutoByIdAsync(int id)
         {
             return await _context.Produtos.FindAsync(id);

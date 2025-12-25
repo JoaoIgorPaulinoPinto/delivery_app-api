@@ -3,6 +3,7 @@ using comaagora.DTO;
 using comaagora.Models;
 using comaagora.Services.Produto;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace comaagora.Controllers
 {
@@ -11,9 +12,11 @@ namespace comaagora.Controllers
     public class ProdutoController : ControllerBase
     {
         private readonly IProdutoService _produtoService;
+        private readonly AppDbContext _context;
 
-        public ProdutoController(IProdutoService produtoService)
+        public ProdutoController(AppDbContext context, IProdutoService produtoService)
         {
+            _context = context;
             _produtoService = produtoService;
         }
         [HttpGet]
@@ -43,14 +46,39 @@ namespace comaagora.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateProduto(CreateProdutoDTO produto, int id)
         {
-            try
+            var res = await _produtoService.Update(produto, id);
+            if (res)
             {
-                return Ok(await _produtoService.Update(produto, id));
+                return Ok(new { message = "Pedido atualizado" });
             }
-            catch (Exception ex)
+            else
             {
-                return BadRequest(ex.Message);
+                return NotFound(new { message = "Produto não encontrado." });
             }
+        }
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreateProduto(CreateProdutoDTO produto, int estabelecimentoId)
+        {
+            var res = await _produtoService.CreateProduto(produto, estabelecimentoId);
+            if (res)
+            {
+                return Ok(new { message = "Produto Criado!" });
+            }
+            else
+            {
+                return NotFound(new { message = "Erro ao criar produto" });
+            }
+        }
+        [HttpGet("Status")]
+        public ActionResult GetProdutoStatus([FromHeader] int EstabelecimentoId)
+        {
+            return Ok(_context.ProdutoStatus.AsNoTracking()
+                .Where(e => e.EstabelecimentoId == EstabelecimentoId)
+                .Select(c => new ProdutoStatusDTO
+                {
+                    Id = c.Id,
+                    Nome = c.Nome ?? "",
+                }).ToList());
         }
     }
 }

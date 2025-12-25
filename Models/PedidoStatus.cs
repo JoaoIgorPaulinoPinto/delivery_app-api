@@ -7,7 +7,6 @@ namespace comaagora.Models
     {
         [Key]
         public int Id { get; set; }
-
         [Required]
         [MaxLength(20)]
         public string Nome { get; set; } = null!;
@@ -16,10 +15,9 @@ namespace comaagora.Models
         public int StatusId { get; set; }
         [Required]
         public Status Status { get; set; } = new();
-        public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
-   
         public int EstabelecimentoId { get; set; }
-        public Estabelecimento Estabelecimento { get; set; }
+        public Estabelecimento? Estabelecimento { get; set; }
+        public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
     }
 
 }

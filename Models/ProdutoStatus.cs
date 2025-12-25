@@ -11,14 +11,14 @@ namespace comaagora.Models
         [Required]
         [MaxLength(20)]
         public string Nome { get; set; } = null!;
+
         [Required]
         public int StatusId { get; set; }
-        [Required]
-        public Status Status { get; set; } = new();
-   
-        public int EstabelecimentoId { get; set; }
-        public Estabelecimento? Estabelecimento { get; set; }
-        public ICollection<Produto> Produtos { get; set; } = new List<Produto>();
-    }
+        public virtual Status Status { get; set; } = null!; // virtual ajuda no Lazy Loading
 
+        public int EstabelecimentoId { get; set; }
+        public virtual Estabelecimento? Estabelecimento { get; set; }
+
+        public virtual ICollection<Produto> Produtos { get; set; } = new List<Produto>();
+    }
 }
