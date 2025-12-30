@@ -1,54 +1,57 @@
 ﻿using comaagora.Data;
 using comaagora.DTO;
+using comaagora.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.ConstrainedExecution;
+using System.Security.Cryptography;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace comaagora.Services.Estabelecimento
 {
     public class EstabelecimentoService : IEstabelecimentoService
     {
-        private readonly AppDbContext _context;
-        public EstabelecimentoService(AppDbContext context)
+        private readonly EstabelecimentoRepository _repo;
+
+        public EstabelecimentoService(EstabelecimentoRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
+
 
         public async Task<GetEstabelecimentoDTO?> GetBySlug(string slug)
         {
-            var estabelecimento = await _context.Estabelecimentos
-                .Where(e => e.Slug == slug)
-                .Select(e => new GetEstabelecimentoDTO
-                {
-                    Id = e.Id,
-                    Slug = e.Slug,
-                    NomeFantasia = e.NomeFantasia,
-                    Telefone = e.Telefone,
-                    Email = e.Email,
-                    Whatsapp = e.Whatsapp,
-                    Endereco = new GetEnderecoDTO
-                    {
-                        Rua = e.Endereco.Rua,
-                        Numero = e.Endereco.Numero,
-                        Bairro = e.Endereco.Bairro,
-                        Cidade = e.Endereco.Cidade,
-                        Uf = e.Endereco.Uf,
-                        Cep = e.Endereco.Cep,
-                        Complemento = e.Endereco.Complemento
-                    },
-                    TaxaEntrega = e.TaxaEntrega,
-                    PedidoMinimo = e.PedidoMinimo,
-                    Status = e.EstabelecimentoStatus.Nome,
-                    HorariosFuncionamento = e.HorariosFuncionamento
-                        .Select(h => new GetHorarioFuncionamentoDTO
-                        {
-                            DiaSemana = h.DiaSemana,
-                            Abertura = h.Abertura,
-                            Fechamento = h.Fechamento
-                        })
-                        .ToList()
-                })
-                .FirstOrDefaultAsync();
+            Models.Estabelecimento? estabelecimento = await _repo.GetBySlug(slug);
 
-            return estabelecimento;
-        }
+            if (estabelecimento == null) {
+                throw (new Exception(message: "Erro ao encontrar estabelecimento"));
+            }
+            return new GetEstabelecimentoDTO
+            {
+                Id = estabelecimento.Id,
+                Slug = estabelecimento.Slug,
+                NomeFantasia = estabelecimento.NomeFantasia,
+                Telefone = estabelecimento.Telefone,
+                Email = estabelecimento.Email,
+                Whatsapp = estabelecimento.Whatsapp,
+                Endereco = new GetEnderecoDTO
+                {
+                    Rua = estabelecimento.Endereco.Rua,
+                    Numero = estabelecimento.Endereco.Numero,
+                    Bairro = estabelecimento.Endereco.Bairro,
+                    Cidade = estabelecimento.Endereco.Cidade,
+                    Uf = estabelecimento.Endereco.Uf,
+                    Cep = estabelecimento.Endereco.Cep,
+                    Complemento = estabelecimento.Endereco.Complemento,
+                },
+                TaxaEntrega = estabelecimento.TaxaEntrega,
+                PedidoMinimo = estabelecimento.PedidoMinimo,
+                HorariosFuncionamento = estabelecimento.HorariosFuncionamento.Select(h => new GetHorarioFuncionamentoDTO
+                {
+                    DiaSemana = h.DiaSemana,
+                    Abertura = h.Abertura,
+                    Fechamento = h.Fechamento
+                }).ToList(),
+            };
+        } 
     }
 }

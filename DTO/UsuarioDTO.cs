@@ -4,15 +4,15 @@ namespace comaagora.DTO
 {
     public class CreateUsuarioDTO
     {
-        public string Nome { get; set; } = "";
-        public string Telefone { get; set; } = "";
+        [Required] public string Nome { get; set; } = "";
+        [Required] public string Telefone { get; set; } = "";
     }
 
     public class GetUsuarioDTO
     {
-        public string Nome { get; set; } = "";
-        public string Telefone { get; set; } = "";
-        public string ClientKey { get; set; } = "";
+        [Required] public string Nome { get; set; } = "";
+        [Required] public string Telefone { get; set; } = "";
+        [Required] public string ClientKey { get; set; } = "";
     }
 
 }

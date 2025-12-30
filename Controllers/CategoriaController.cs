@@ -1,8 +1,10 @@
 ﻿using comaagora.Data;
 using comaagora.DTO;
 using comaagora.Models;
+using comaagora.Services.Categoria;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace comaagora.Controllers
 {
@@ -10,21 +12,15 @@ namespace comaagora.Controllers
     [Route("[Controller]")]
     public class CategoriaController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        public CategoriaController(AppDbContext context)
+        private readonly ICategoriaService _service;
+        public CategoriaController(ICategoriaService service)
         {
-            _context = context;
+            _service = service;
         }
         [HttpGet]
-        public ActionResult GetCategorias([FromHeader] int EstabelecimentoId)
+        public async Task<ActionResult> GetCategorias([FromHeader] int estabelecimentoId)
         {
-            return Ok(_context.ProdutoCategorias.AsNoTracking()
-                .Where(e => e.EstabelecimentoId == EstabelecimentoId)
-                .Select(c => new ProdutoCategoriaDTO
-                {
-                    Id = c.Id,
-                    Nome = c.Nome ?? "",
-                }).ToList());
+            return Ok(await _service.GetCategorias(estabelecimentoId));
         }
     }
 }

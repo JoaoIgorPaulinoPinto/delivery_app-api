@@ -4,33 +4,46 @@ namespace comaagora.DTO
 {
     public class CreateProdutoDTO
     {
+       [Required]
         public string Nome { get; set; } = "";
+       [Required]
         public string Descricao { get; set; } = "";
+       [Required]
         public decimal Preco { get; set; }
+       [Required]
         public int StatusId { get; set; }
+       [Required]
         public string ImgUrl { get; set; } = "";
+       [Required]
         public int CategoriaId { get; set; }
     }
 
     public class GetProdutoDTO
     {
+       [Required] 
         public int Id { get; set; }
+       [Required] 
         public string Nome { get; set; } = "";
+       [Required] 
         public string Descricao { get; set; } = "";
+       [Required] 
         public string ImgUrl { get; set; } = "";
+       [Required] 
         public ProdutoStatusDTO? Status { get; set; }
-        public decimal Preco { get; set; }
-        public ProdutoCategoriaDTO Categoria { get; set; } = new();
+       [Required] 
+       public decimal Preco { get; set; }
+       [Required]
+       public ProdutoCategoriaDTO Categoria { get; set; } = new();
     }
     public class ProdutoStatusDTO
     {
-        public int Id { get; set; }
-        public string Nome { get; set; } = "";
+        [Required] public int Id { get; set; }
+        [Required] public string Nome { get; set; } = "";
     }
     public class ProdutoCategoriaDTO
     {
-        public int Id { get; set; }
-        public string Nome { get; set; } = "";
+        [Required] public int Id { get; set; }
+        [Required] public string Nome { get; set; } = "";
     }
 
 }
