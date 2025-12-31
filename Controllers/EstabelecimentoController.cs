@@ -24,7 +24,7 @@ namespace comaagora.Controllers
             }
             else
             {
-                return NotFound("Estabelecimento não encontrado");
+                return NotFound(null);
             }
         }
     }

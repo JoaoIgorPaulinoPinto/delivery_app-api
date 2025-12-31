@@ -13,7 +13,6 @@ namespace comaagora.DTO
         public List<CreateProdutoPedidoDTO> Produtos { get; set; } = new();
         [Required]
         public int MetodoPagamentoId { get; set; }
-        [Required]
         public string? Observacao { get; set; }
     }
     public class UpdatePedidoDTO

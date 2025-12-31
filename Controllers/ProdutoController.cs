@@ -20,11 +20,11 @@ namespace comaagora.Controllers
             _produtoService = produtoService;
         }
         [HttpGet]
-        public async Task<IActionResult> Get([FromHeader] int estabelecimentoId)
+        public async Task<IActionResult> Get([FromHeader] string slug)
         {
             try
             {
-                return Ok(await _produtoService.GetAll(estabelecimentoId));
+                return Ok(await _produtoService.GetAll(slug));
 
             }
             catch (Exception ex) { 
@@ -36,7 +36,7 @@ namespace comaagora.Controllers
         {
             try
             {
-                return Ok(await _produtoService.GetByID(id, slug));
+                return Ok(await _produtoService.GetByID(id));
             }
             catch (Exception ex)
             {
