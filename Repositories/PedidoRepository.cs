@@ -91,12 +91,6 @@ namespace comaagora.Repositories
         }
 
 
-        // Busca estabelecimento por ID 
-        public async Task<Models.Estabelecimento?> GetEstabelecimentoByIdAsync(int id)
-        {
-            return await _context.Estabelecimentos.FindAsync(id);
-        }
-
         // Adiciona endereço
         public async Task AddEnderecoAsync(Endereco endereco)
         {
@@ -132,7 +126,7 @@ namespace comaagora.Repositories
         }
         public async Task<List<Pedido>> GetPedidosByClientKeyAsync(
             string clientKey,
-            int estabelecimentoId)
+            string slug)
         {
             return await _context.Pedidos
                 .AsNoTracking()
@@ -154,14 +148,14 @@ namespace comaagora.Repositories
 
                 .Where(p =>
                     p.Usuario.ClientKey == clientKey &&
-                    p.EstabelecimentoId == estabelecimentoId)
+                    p.Estabelecimento.Slug == slug)
 
                 .OrderByDescending(p => p.Id)
 
                 .ToListAsync();
         }
         public async Task<List<Pedido>> GetPedidosByStablishmentId(
-                  int estabelecimentoId)
+                  string slug)
         {
             return await _context.Pedidos
                 .AsNoTracking()
@@ -182,7 +176,7 @@ namespace comaagora.Repositories
                     .ThenInclude(pp => pp.Produto)
 
                 .Where(p =>
-                    p.EstabelecimentoId == estabelecimentoId)
+                    p.Estabelecimento.Slug == slug)
 
                 .OrderByDescending(p => p.Id)
 

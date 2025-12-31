@@ -5,6 +5,6 @@ namespace comaagora.Services.Categoria
 {
     public interface ICategoriaService 
     {
-        public Task<List<GetCateriaDTO>> GetCategorias(int estabelecimentoId);
+        public Task<List<GetCateriaDTO>> GetCategorias(string slug);
     }
 }

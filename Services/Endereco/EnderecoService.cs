@@ -4,7 +4,7 @@ using comaagora.Services.Endereco;
 
 public class EnderecoService: IEnderecoService
 {
-    public Endereco CriarEndereco(CreateEnderecoDTO dto, int estabelecimentoId)
+    public Endereco CriarEndereco(CreateEnderecoDTO dto, string slug)
     {
         return new Endereco
         {

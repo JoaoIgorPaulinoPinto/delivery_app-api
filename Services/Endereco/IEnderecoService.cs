@@ -4,6 +4,6 @@ namespace comaagora.Services.Endereco
 {
     public interface IEnderecoService
     {
-        public Models.Endereco CriarEndereco(CreateEnderecoDTO dto, int estabelecimentoId);
+        public Models.Endereco CriarEndereco(CreateEnderecoDTO dto, string slug);
     }
 }

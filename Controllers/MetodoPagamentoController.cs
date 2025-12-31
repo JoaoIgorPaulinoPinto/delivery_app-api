@@ -1,6 +1,7 @@
 ﻿using comaagora.Data;
 using comaagora.DTO;
 using comaagora.Services;
+using comaagora.Services.MetodoPagamento;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
@@ -19,9 +20,9 @@ namespace comaagora.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMetodosPagamento([FromHeader] int EstabelecimentoId)
+        public async Task<IActionResult> GetMetodosPagamento([FromHeader] string slug)
         {
-            return Ok(await _service.GetAll(EstabelecimentoId));
+            return Ok(await _service.GetAll(slug));
         }
     }
 }

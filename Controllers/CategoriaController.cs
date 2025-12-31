@@ -18,9 +18,9 @@ namespace comaagora.Controllers
             _service = service;
         }
         [HttpGet]
-        public async Task<ActionResult> GetCategorias([FromHeader] int estabelecimentoId)
+        public async Task<ActionResult> GetCategorias([FromHeader] string slug)
         {
-            return Ok(await _service.GetCategorias(estabelecimentoId));
+            return Ok(await _service.GetCategorias(slug));
         }
     }
 }

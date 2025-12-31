@@ -11,9 +11,9 @@ namespace comaagora.Services.Categoria
         {
             _repo = repository;
         }
-        public async Task<List<GetCateriaDTO>> GetCategorias(int estabelecimentoId)
+        public async Task<List<GetCateriaDTO>> GetCategorias(string slug)
         {
-            List<ProdutoCategoria> lista = await _repo.GetCategorias(estabelecimentoId);
+            List<ProdutoCategoria> lista = await _repo.GetCategorias(slug);
             return lista.Select(c => new GetCateriaDTO
             {
                 Id = c.Id,

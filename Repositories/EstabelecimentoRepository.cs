@@ -14,14 +14,23 @@ namespace comaagora.Repositories
         {
             _context = context;
         }
-           public async Task<Estabelecimento?> GetBySlug(string slug)
+        public async Task<Estabelecimento> GetBySlug(string slug)
         {
-            return await _context.Estabelecimentos
+            var est = await _context.Estabelecimentos
                 .Include(c => c.HorariosFuncionamento)
+                .Include(c => c.Endereco)
                 .Include(c => c.EstabelecimentoStatus)
                 .Where(e => e.Slug == slug)
-                .AsNoTracking() 
-                .FirstOrDefaultAsync(); 
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+            if (est != null)
+            {
+                return est;
+            }
+            else
+            {
+                throw new Exception(message: "Erro ao encontrar estabelecimento");
+            }
         }
     }
 }

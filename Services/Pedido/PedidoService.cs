@@ -2,21 +2,25 @@
 using comaagora.Models;
 using comaagora.Repositories;
 using comaagora.Services.Endereco;
+using comaagora.Services.Estabelecimento;
 using comaagora.Services.Pedido;
 
 public class PedidoService : IPedidoService
 {
     private readonly PedidoRepository _pedidoRepo;
     private readonly IUsuarioService _usuarioService;
+    private readonly IEstabelecimentoService _estService;
     private readonly IEnderecoService _enderecoService;
     private readonly IProdutoPedidoService _produtoPedidoService;
 
     public PedidoService(
         PedidoRepository pedidoRepo,
+        IEstabelecimentoService estabelecimentoService,
         IUsuarioService usuarioService,
         IEnderecoService enderecoService,
         IProdutoPedidoService produtoPedidoService)
     {
+        _estService = estabelecimentoService;
         _pedidoRepo = pedidoRepo;
         _usuarioService = usuarioService;
         _enderecoService = enderecoService;
@@ -25,7 +29,7 @@ public class PedidoService : IPedidoService
 
     public async Task<GetPedidoDTO> CreatePedido(
         string? clientKey,
-        int estabelecimentoId,
+        string slug,
         CreatePedidoDTO dto)
     {
         if (dto == null)
@@ -35,18 +39,18 @@ public class PedidoService : IPedidoService
             throw new ArgumentException("Pedido deve conter produtos.");
 
         var estabelecimento =
-            await _pedidoRepo.GetEstabelecimentoByIdAsync(estabelecimentoId)
+            await _estService.GetBySlug(slug)
             ?? throw new KeyNotFoundException("Estabelecimento não encontrado.");
 
-        var endereco = _enderecoService.CriarEndereco(dto.Endereco, estabelecimentoId);
+        var endereco = _enderecoService.CriarEndereco(dto.Endereco, slug);
 
         var usuario = await _usuarioService
-            .ResolverUsuario(clientKey, estabelecimentoId, dto.Usuario);
+            .ResolverUsuario(clientKey, estabelecimento.Id, dto.Usuario);
 
         usuario.Endereco = endereco;
 
         var produtos = await _produtoPedidoService
-            .CriarListaAsync(dto.Produtos, estabelecimentoId);
+            .CriarListaAsync(dto.Produtos, estabelecimento.Id);
 
         var pedido = new Pedido
         {
@@ -135,7 +139,7 @@ public class PedidoService : IPedidoService
     }
     public async Task<List<GetPedidoDTO>> GetPedidosByClientKey(
        string clientKey,
-       int estabelecimentoId)
+       string slug)
     {
         if (string.IsNullOrWhiteSpace(clientKey))
             throw new ArgumentException("ClientKey inválido.");
@@ -143,7 +147,7 @@ public class PedidoService : IPedidoService
         clientKey = clientKey.Trim().ToLower();
 
         var pedidos = await _pedidoRepo
-            .GetPedidosByClientKeyAsync(clientKey, estabelecimentoId);
+            .GetPedidosByClientKeyAsync(clientKey, slug);
 
         return pedidos
             .Select(MapToGetPedidoDTO)
@@ -167,13 +171,13 @@ public class PedidoService : IPedidoService
         }
     }
 
-    public async Task<List<GetPedidoDTO>> GetPedidos(int estabelecimentoId)
+    public async Task<List<GetPedidoDTO>> GetPedidos(string slug)
     {
-        if (estabelecimentoId is < 0)
+        if (slug == "" || slug == null)
             throw new ArgumentException("Estabelecimento inválido.");
 
         var pedidos = await _pedidoRepo
-            .GetPedidosByStablishmentId(estabelecimentoId);
+            .GetPedidosByStablishmentId(slug);
 
         return pedidos
             .Select(MapToGetPedidoDTO)

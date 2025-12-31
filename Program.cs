@@ -1,7 +1,9 @@
 ﻿using comaagora.Data;
 using comaagora.Repositories;
+using comaagora.Services.Categoria;
 using comaagora.Services.Endereco;
 using comaagora.Services.Estabelecimento;
+using comaagora.Services.MetodoPagamento;
 using comaagora.Services.Pedido;
 using comaagora.Services.Produto;
 using Microsoft.EntityFrameworkCore;
@@ -40,9 +42,14 @@ builder.Services.AddScoped<IProdutoPedidoService, ProdutoPedidoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<IEstabelecimentoService, EstabelecimentoService>();
-    
+builder.Services.AddScoped<IMetodoPagamentoService, MetodoPagamentoService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<PedidoRepository>();
+builder.Services.AddScoped<MetodoPagamentoRepository>();
+builder.Services.AddScoped<CategoriaRepository>();
+builder.Services.AddScoped<EstabelecimentoRepository>();
 builder.Services.AddScoped<ProdutoRepository>();
 
 var app = builder.Build();

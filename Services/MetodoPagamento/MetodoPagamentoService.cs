@@ -1,22 +1,22 @@
 ﻿using comaagora.DTO;
-using comaagora.Models;
 using comaagora.Repositories;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace comaagora.Services
+namespace comaagora.Services.MetodoPagamento
 {
-    public class MetodoPagamentoService:IMetodoPagamentoService
+    public class MetodoPagamentoService : IMetodoPagamentoService
     {
-        private readonly IMetodoPagamentoService _metodoPagamentoService;
         private readonly MetodoPagamentoRepository _metodoPagamentoRepo;
-        public MetodoPagamentoService(IMetodoPagamentoService MthPhmntSrvc, MetodoPagamentoRepository metodoPagamentoRepo)
+
+        public MetodoPagamentoService(MetodoPagamentoRepository metodoPagamentoRepo)
         {
-            _metodoPagamentoService = MthPhmntSrvc;
             _metodoPagamentoRepo = metodoPagamentoRepo;
         }
-        public async Task<List<MetodoPagamentoDTO>> GetAll(int id)
+
+        public async Task<List<MetodoPagamentoDTO>> GetAll(string slug)
         {
-            return await _metodoPagamentoRepo.GetAll(id);
+            return await _metodoPagamentoRepo.GetAll(slug);
         }
     }
 }

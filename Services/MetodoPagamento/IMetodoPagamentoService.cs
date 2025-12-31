@@ -1,9 +1,11 @@
-﻿using comaagora.Models;
+﻿using comaagora.DTO;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace comaagora.Services
+namespace comaagora.Services.MetodoPagamento
 {
     public interface IMetodoPagamentoService
     {
-        public Task<List<MetodoPagamentoDTO>> GetAll(int estabelecimentoId);
+        Task<List<MetodoPagamentoDTO>> GetAll(string slug);
     }
 }

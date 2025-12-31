@@ -1,4 +1,5 @@
-﻿    using comaagora.Services.Estabelecimento;
+﻿using comaagora.DTO;
+using comaagora.Services.Estabelecimento;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,14 @@ namespace comaagora.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBySlug([FromQuery] string slug)
         {
-            return Ok(await _estabelecimentoService.GetBySlug(slug));
+            var est = await _estabelecimentoService.GetBySlug(slug);
+            if (est != null ) {
+                return Ok(est);
+            }
+            else
+            {
+                return NotFound("Estabelecimento não encontrado");
+            }
         }
     }
 }

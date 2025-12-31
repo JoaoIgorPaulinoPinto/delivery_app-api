@@ -1,10 +1,6 @@
 ﻿using comaagora.Data;
 using comaagora.DTO;
 using comaagora.Repositories;
-using Microsoft.EntityFrameworkCore;
-using System.Runtime.ConstrainedExecution;
-using System.Security.Cryptography;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace comaagora.Services.Estabelecimento
 {
@@ -20,12 +16,13 @@ namespace comaagora.Services.Estabelecimento
 
         public async Task<GetEstabelecimentoDTO?> GetBySlug(string slug)
         {
-            Models.Estabelecimento? estabelecimento = await _repo.GetBySlug(slug);
+            var estabelecimento = await _repo.GetBySlug(slug);
 
-            if (estabelecimento == null) {
-                throw (new Exception(message: "Erro ao encontrar estabelecimento"));
+            if (estabelecimento == null)
+            {
+                throw new Exception("Erro ao encontrar estabelecimento");
             }
-            return new GetEstabelecimentoDTO
+            GetEstabelecimentoDTO estabelecimentoMapeado = new GetEstabelecimentoDTO
             {
                 Id = estabelecimento.Id,
                 Slug = estabelecimento.Slug,
@@ -45,6 +42,7 @@ namespace comaagora.Services.Estabelecimento
                 },
                 TaxaEntrega = estabelecimento.TaxaEntrega,
                 PedidoMinimo = estabelecimento.PedidoMinimo,
+                Status = estabelecimento.EstabelecimentoStatus.Nome,
                 HorariosFuncionamento = estabelecimento.HorariosFuncionamento.Select(h => new GetHorarioFuncionamentoDTO
                 {
                     DiaSemana = h.DiaSemana,
@@ -52,6 +50,7 @@ namespace comaagora.Services.Estabelecimento
                     Fechamento = h.Fechamento
                 }).ToList(),
             };
+            return estabelecimentoMapeado;
         } 
     }
 }

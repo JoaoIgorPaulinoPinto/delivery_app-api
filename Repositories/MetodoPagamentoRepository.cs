@@ -13,10 +13,10 @@ namespace comaagora.Repositories
             _context = context;
         }
 
-        public async Task<List<MetodoPagamentoDTO>> GetAll(int id)
+        public async Task<List<MetodoPagamentoDTO>> GetAll(string slug)
         {
             var mthpgmnt = await _context.MetodoPagamento.AsNoTracking()
-                    .Where(e => e.EstabelecimentoId == id)
+                    .Where(e => e.Estabelecimento.Slug == slug)
                     .Select(m => new MetodoPagamentoDTO {
                     Id=m.Id,
                     Nome = m.Nome,
