@@ -13,9 +13,9 @@ namespace comaagora.Services.Produto
             _repository = repository;
         }
 
-        public async Task<List<GetProdutoDTO>> GetAll(int estabelecimentoId)
+        public async Task<List<GetProdutoDTO>> GetAll(string slug)
         {
-            var produtos = await _repository.GetAllByEstabelecimentoAsync(estabelecimentoId);
+            var produtos = await _repository.GetAllByEstabelecimentoAsync(slug);
 
             return produtos.Select(p => new GetProdutoDTO
             {
@@ -37,9 +37,9 @@ namespace comaagora.Services.Produto
             }).ToList();
         }
 
-        public async Task<GetProdutoDTO> GetByID(int id, int estabelecimentoId)
+        public async Task<GetProdutoDTO> GetByID(int id)
         {
-            var p = await _repository.GetByIdAsync(id, estabelecimentoId);
+            var p = await _repository.GetByIdAsync(id);
 
             if (p == null)
                 throw new KeyNotFoundException("Produto não encontrado");

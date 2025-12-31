@@ -15,7 +15,7 @@ namespace comaagora.Repositories
         }
 
         // Busca todos os produtos de um estabelecimento
-        public async Task<List<Produto>> GetAllByEstabelecimentoAsync(int estabelecimentoId)
+        public async Task<List<Produto>> GetAllByEstabelecimentoAsync(string slug)
         {
             // 1. Atualize o Include para ProdutoStatus
             // 2. Se quiser acessar o Status original, faça um ThenInclude
@@ -23,7 +23,7 @@ namespace comaagora.Repositories
                 .Include(p => p.Categoria)
                 .Include(p => p.Status) // Nova tabela
                 .AsNoTracking()
-                .Where(p => p.EstabelecimentoId == estabelecimentoId)
+                .Where(p => p.Estabelecimento.Slug == slug)
                 .ToListAsync();
 
             if (produtos.Any())
@@ -32,18 +32,18 @@ namespace comaagora.Repositories
             }
 
             // Use string interpolation para evitar erro de concatenação sem espaço
-            throw new Exception($"Produtos do estabelecimento {estabelecimentoId} não encontrados");
+            throw new Exception($"Produtos do estabelecimento {slug} não encontrados");
         }
 
         // Busca produto por ID e estabelecimento
-        public async Task<Produto?> GetByIdAsync(int id, int estabelecimentoId)
+        public async Task<Produto?> GetByIdAsync(int id)
         {
             return await _context.Produtos
                 .Include(p => p.Categoria)
                 .Include(p => p.Status)
                 .Include(p => p.Estabelecimento)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == id && p.EstabelecimentoId == estabelecimentoId);
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
         // Atualiza o produto com base no ID
         public async Task<bool> UpdateAsync(CreateProdutoDTO dto, int id)

@@ -32,11 +32,11 @@ namespace comaagora.Controllers
             }
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromHeader]int estabelecimentoId, int id)
+        public async Task<IActionResult> GetById([FromHeader]string slug, int id)
         {
             try
             {
-                return Ok(await _produtoService.GetByID(id, estabelecimentoId));
+                return Ok(await _produtoService.GetByID(id, slug));
             }
             catch (Exception ex)
             {
