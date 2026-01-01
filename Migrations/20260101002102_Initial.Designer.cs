@@ -12,7 +12,7 @@ using comaagora.Data;
 namespace comaagora.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251224003214_Initial")]
+    [Migration("20260101002102_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -394,6 +394,9 @@ namespace comaagora.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("CreatedAt"));
 
+                    b.Property<int>("EstabelecimentoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -409,6 +412,8 @@ namespace comaagora.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime>("UpdatedAt"));
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EstabelecimentoId");
 
                     b.HasIndex("StatusId");
 
@@ -453,7 +458,10 @@ namespace comaagora.Migrations
                     b.Property<decimal>("Preco")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int>("StatusId")
+                    b.Property<int>("ProdutoStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -467,6 +475,8 @@ namespace comaagora.Migrations
                     b.HasIndex("CategoriaId");
 
                     b.HasIndex("EstabelecimentoId");
+
+                    b.HasIndex("ProdutoStatusId");
 
                     b.HasIndex("StatusId");
 
@@ -560,6 +570,46 @@ namespace comaagora.Migrations
                     b.HasIndex("ProdutoId");
 
                     b.ToTable("ProdutoPedidos");
+                });
+
+            modelBuilder.Entity("comaagora.Models.ProdutoStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("CreatedAt"));
+
+                    b.Property<int>("EstabelecimentoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime>("UpdatedAt"));
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EstabelecimentoId");
+
+                    b.HasIndex("StatusId");
+
+                    b.ToTable("ProdutoStatus");
                 });
 
             modelBuilder.Entity("comaagora.Models.Status", b =>
@@ -799,11 +849,19 @@ namespace comaagora.Migrations
 
             modelBuilder.Entity("comaagora.Models.PedidoStatus", b =>
                 {
+                    b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
+                        .WithMany("PedidoStatus")
+                        .HasForeignKey("EstabelecimentoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("comaagora.Models.Status", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Estabelecimento");
 
                     b.Navigation("Status");
                 });
@@ -822,11 +880,15 @@ namespace comaagora.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("comaagora.Models.Status", "Status")
+                    b.HasOne("comaagora.Models.ProdutoStatus", "Status")
                         .WithMany("Produtos")
-                        .HasForeignKey("StatusId")
+                        .HasForeignKey("ProdutoStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("comaagora.Models.Status", null)
+                        .WithMany("Produtos")
+                        .HasForeignKey("StatusId");
 
                     b.Navigation("Categoria");
 
@@ -879,6 +941,25 @@ namespace comaagora.Migrations
                     b.Navigation("Produto");
                 });
 
+            modelBuilder.Entity("comaagora.Models.ProdutoStatus", b =>
+                {
+                    b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
+                        .WithMany("ProdutosStatus")
+                        .HasForeignKey("EstabelecimentoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("comaagora.Models.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estabelecimento");
+
+                    b.Navigation("Status");
+                });
+
             modelBuilder.Entity("comaagora.Models.Status", b =>
                 {
                     b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
@@ -917,6 +998,8 @@ namespace comaagora.Migrations
 
                     b.Navigation("MetodosPagamento");
 
+                    b.Navigation("PedidoStatus");
+
                     b.Navigation("Pedidos");
 
                     b.Navigation("ProdutoCategorias");
@@ -924,6 +1007,8 @@ namespace comaagora.Migrations
                     b.Navigation("Produtos");
 
                     b.Navigation("ProdutosPedido");
+
+                    b.Navigation("ProdutosStatus");
 
                     b.Navigation("Status");
                 });
@@ -949,6 +1034,11 @@ namespace comaagora.Migrations
                 });
 
             modelBuilder.Entity("comaagora.Models.ProdutoCategoria", b =>
+                {
+                    b.Navigation("Produtos");
+                });
+
+            modelBuilder.Entity("comaagora.Models.ProdutoStatus", b =>
                 {
                     b.Navigation("Produtos");
                 });

@@ -306,6 +306,7 @@ namespace comaagora.Migrations
                     Nome = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     StatusId = table.Column<int>(type: "int", nullable: false),
+                    EstabelecimentoId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
@@ -314,6 +315,12 @@ namespace comaagora.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PedidoStatus", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PedidoStatus_Estabelecimentos_EstabelecimentoId",
+                        column: x => x.EstabelecimentoId,
+                        principalTable: "Estabelecimentos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PedidoStatus_Status_StatusId",
                         column: x => x.StatusId,
@@ -349,6 +356,39 @@ namespace comaagora.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ProdutoCategorias_Status_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "Status",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ProdutoStatus",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    EstabelecimentoId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProdutoStatus", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProdutoStatus_Estabelecimentos_EstabelecimentoId",
+                        column: x => x.EstabelecimentoId,
+                        principalTable: "Estabelecimentos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProdutoStatus_Status_StatusId",
                         column: x => x.StatusId,
                         principalTable: "Status",
                         principalColumn: "Id",
@@ -425,7 +465,8 @@ namespace comaagora.Migrations
                     Preco = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     EstabelecimentoId = table.Column<int>(type: "int", nullable: false),
                     CategoriaId = table.Column<int>(type: "int", nullable: false),
-                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    ProdutoStatusId = table.Column<int>(type: "int", nullable: false),
+                    StatusId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
@@ -447,11 +488,16 @@ namespace comaagora.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Produtos_ProdutoStatus_ProdutoStatusId",
+                        column: x => x.ProdutoStatusId,
+                        principalTable: "ProdutoStatus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Produtos_Status_StatusId",
                         column: x => x.StatusId,
                         principalTable: "Status",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -558,6 +604,11 @@ namespace comaagora.Migrations
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PedidoStatus_EstabelecimentoId",
+                table: "PedidoStatus",
+                column: "EstabelecimentoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PedidoStatus_StatusId",
                 table: "PedidoStatus",
                 column: "StatusId");
@@ -598,8 +649,23 @@ namespace comaagora.Migrations
                 column: "EstabelecimentoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Produtos_ProdutoStatusId",
+                table: "Produtos",
+                column: "ProdutoStatusId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Produtos_StatusId",
                 table: "Produtos",
+                column: "StatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProdutoStatus_EstabelecimentoId",
+                table: "ProdutoStatus",
+                column: "EstabelecimentoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProdutoStatus_StatusId",
+                table: "ProdutoStatus",
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
@@ -647,6 +713,9 @@ namespace comaagora.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProdutoCategorias");
+
+            migrationBuilder.DropTable(
+                name: "ProdutoStatus");
 
             migrationBuilder.DropTable(
                 name: "Status");
