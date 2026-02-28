@@ -1,82 +1,65 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using comaagora.Models.Base;
+using System;
+using System.Collections.Generic;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class Estabelecimento
 {
-    public class Estabelecimento : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [MaxLength(255)]
-        public string Slug { get; set; } = null!;
+    public string Slug { get; set; } = null!;
 
-        [Required]
-        [MaxLength(255)]
-        public string NomeFantasia { get; set; } = null!;
+    public string NomeFantasia { get; set; } = null!;
 
-        [Required]
-        [MaxLength(255)]
-        public string RazaoSocial { get; set; } = null!;
+    public string RazaoSocial { get; set; } = null!;
 
-        [Required]
-        [StringLength(18)]
-        //[RegularExpression(@"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$", ErrorMessage = "CNPJ inválido. Formato esperado: 00.000.000/0000-00")]
-        public string Cnpj { get; set; } = null!;
+    public string Cnpj { get; set; } = null!;
 
-        [Required]
-        [Phone]
-        [MaxLength(20)]
-        public string Telefone { get; set; } = null!;
+    public string Telefone { get; set; } = null!;
 
-        [Required]
-        [MaxLength(255)]
-        [EmailAddress]
-        public string Email { get; set; } = null!;
+    public string Email { get; set; } = null!;
 
-        [Required]
-        [Phone]
-        [MaxLength(20)]
-        public string Whatsapp { get; set; } = null!;
+    public string Whatsapp { get; set; } = null!;
 
-        [Required]
-        public int EnderecoId { get; set; }
+    public int EstabelecimentoStatusId { get; set; }
 
-        [ForeignKey(nameof(EnderecoId))]
-        public Endereco Endereco { get; set; } = null!;
+    public int TenantId { get; set; }
 
-        [Required]
-        public int EstabelecimentoStatusId { get; set; }
+    public decimal TaxaEntrega { get; set; }
 
-        [ForeignKey(nameof(EstabelecimentoStatusId))]
-        public EstabelecimentoStatus EstabelecimentoStatus { get; set; } = null!;
+    public decimal PedidoMinimo { get; set; }
 
-        [Required]
-        public int TenantId { get; set; }
+    public DateTime CreatedAt { get; set; }
 
-        [ForeignKey(nameof(TenantId))]
-        public Tenant Tenant { get; set; } = null!;
+    public DateTime UpdatedAt { get; set; }
 
-        [Required]
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal TaxaEntrega { get; set; }
+    public virtual ICollection<EstabelecimentoCategorium> EstabelecimentoCategoria { get; set; } = new List<EstabelecimentoCategorium>();
 
-        [Required]
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal PedidoMinimo { get; set; }
+    public virtual Endereco Endereco { get; set; } = null!;
 
-        // Relacionamentos
-        public ICollection<Status> Status { get; set; } = new List<Status>();
-        public ICollection<Produto> Produtos { get; set; } = new List<Produto>();
-        public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
-        public ICollection<PedidoStatus> PedidoStatus { get; set; } = new List<PedidoStatus>();
-        public ICollection<ProdutoPedido> ProdutosPedido { get; set; } = new List<ProdutoPedido>();
-        public ICollection<EstabelecimentoCategoria> Categorias { get; set; } = new List<EstabelecimentoCategoria>();
-        public ICollection<ProdutoCategoria> ProdutoCategorias { get; set; } = new List<ProdutoCategoria>();
-        public ICollection<MetodoPagamento> MetodosPagamento { get; set; } = new List<MetodoPagamento>();
-        public ICollection<HorarioFuncionamento> HorariosFuncionamento { get; set; } = new List<HorarioFuncionamento>();
-        public ICollection<ProdutoStatus> ProdutosStatus { get; set; } = new List<ProdutoStatus>();
-    }
+    public virtual EstabelecimentoStatus EstabelecimentoStatus { get; set; } = null!;
+
+    public virtual ICollection<HorarioFuncionamento> HorarioFuncionamentos { get; set; } = new List<HorarioFuncionamento>();
+
+    public virtual ICollection<MetodoPagamento> MetodoPagamentos { get; set; } = new List<MetodoPagamento>();
+
+    public virtual ICollection<PedidoStatus> PedidoStatuses { get; set; } = new List<PedidoStatus>();
+
+    public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+
+    public virtual ICollection<ProdutoCategoria> ProdutoCategoria { get; set; } = new List<ProdutoCategoria>();
+
+    public virtual ICollection<ProdutoPedido> ProdutoPedidos { get; set; } = new List<ProdutoPedido>();
+
+    public virtual ICollection<ProdutoStatus> ProdutoStatuses { get; set; } = new List<ProdutoStatus>();
+
+    public virtual ICollection<Produto> Produtos { get; set; } = new List<Produto>();
+
+    public virtual ICollection<Status> Statuses { get; set; } = new List<Status>();
+
+    public virtual Tenant Tenant { get; set; } = null!;
+
+    public virtual ICollection<UnidadeMedidum> UnidadeMedida { get; set; } = new List<UnidadeMedidum>();
+
+    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

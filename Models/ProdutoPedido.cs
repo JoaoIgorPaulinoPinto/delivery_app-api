@@ -1,41 +1,31 @@
-﻿using comaagora.Models.Base;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System;
+using System.Collections.Generic;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class ProdutoPedido
 {
-    public class ProdutoPedido : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        public int EstabelecimentoId { get; set; }
+    public int EstabelecimentoId { get; set; }
 
-        [Required]
-        public int PedidoId { get; set; }
+    public int PedidoId { get; set; }
 
-        [Required]
-        public int ProdutoId { get; set; }
+    public int ProdutoId { get; set; }
 
-        [Required]
-        [Range(1, 999, ErrorMessage = "Quantidade deve ser pelo menos 1.")]
-        public int Quantidade { get; set; }
+    public int Quantidade { get; set; }
 
-        [Required]
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal PrecoUnitario { get; set; }
-        // Captura o preço do produto no momento do pedido
+    public decimal PrecoUnitario { get; set; }
 
-        [Required]
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal Subtotal { get; set; }
-        // Quantidade * PrecoUnitario
+    public decimal Subtotal { get; set; }
 
-        [ForeignKey(nameof(ProdutoId))]
-        public Produto Produto { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
 
-        [ForeignKey(nameof(PedidoId))]
-        public Pedido Pedido { get; set; } = null!;
-    }
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual Estabelecimento Estabelecimento { get; set; } = null!;
+
+    public virtual Pedido Pedido { get; set; } = null!;
+
+    public virtual Produto Produto { get; set; } = null!;
 }

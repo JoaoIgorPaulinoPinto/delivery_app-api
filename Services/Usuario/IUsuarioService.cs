@@ -1,7 +1,10 @@
-﻿using comaagora.DTO;
+using comaagora.DTO;
 using comaagora.Models;
 
-public interface IUsuarioService
+namespace comaagora.Services.Usuario
 {
-    public Task<Usuario> ResolverUsuario(string? clientKey, int estId, CreateUsuarioDTO dto);
+    public interface IUsuarioService
+    {
+        Task<Models.Usuario> ResolverUsuario(string? clientKey, int estId, CreateUsuarioDTO dto);
+    }
 }

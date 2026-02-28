@@ -1,15 +1,10 @@
-﻿using comaagora.Data;
-using comaagora.DTO;
-using comaagora.Services;
 using comaagora.Services.MetodoPagamento;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace comaagora.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class MetodoPagamentoController : ControllerBase
     {
         private readonly IMetodoPagamentoService _service;
@@ -20,9 +15,16 @@ namespace comaagora.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMetodosPagamento([FromHeader] string slug)
+        public async Task<IActionResult> GetMetodosPagamento([FromQuery] string slug)
         {
-            return Ok(await _service.GetAll(slug));
+            try
+            {
+                return Ok(await _service.GetAll(slug));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
     }
 }

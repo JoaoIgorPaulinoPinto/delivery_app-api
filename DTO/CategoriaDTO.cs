@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace comaagora.DTO
 {
-    public class GetCateriaDTO
+    public class GetCategoriaDTO
     {
-        [Required]
         public int Id { get; set; }
+
         [Required]
-        public required string Nome { get; set; }
+        [StringLength(100, MinimumLength = 2)]
+        public string Nome { get; set; } = string.Empty;
     }
 }

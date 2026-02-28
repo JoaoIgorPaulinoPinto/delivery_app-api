@@ -1,36 +1,39 @@
-﻿using comaagora.Models;
 using comaagora.DTO;
+using comaagora.Models;
 using comaagora.Repositories;
 
-public class ProdutoPedidoService:IProdutoPedidoService
+namespace comaagora.Services.ProdutoPedido
 {
-    private readonly PedidoRepository _pedidoRepo;
-
-    public ProdutoPedidoService(PedidoRepository pedidoRepo)
+    public class ProdutoPedidoService : IProdutoPedidoService
     {
-        _pedidoRepo = pedidoRepo;
-    }
+        private readonly PedidoRepository _pedidoRepo;
 
-    public async Task<List<ProdutoPedido>> CriarListaAsync(List<CreateProdutoPedidoDTO> itens, int estabelecimentoId)
-    {
-        var lista = new List<ProdutoPedido>();
-
-        foreach (var item in itens)
+        public ProdutoPedidoService(PedidoRepository pedidoRepo)
         {
-            var produto = await _pedidoRepo.GetProdutoByIdAsync(item.ProdutoId)
-                ?? throw new KeyNotFoundException($"Produto {item.ProdutoId} não encontrado.");
-
-            lista.Add(new ProdutoPedido
-            {
-                Produto = produto,
-                ProdutoId = produto.Id,
-                Quantidade = item.Quantidade,
-                EstabelecimentoId = estabelecimentoId,
-                PrecoUnitario = produto.Preco,
-                Subtotal = produto.Preco * item.Quantidade
-            });
+            _pedidoRepo = pedidoRepo;
         }
 
-        return lista;
+        public async Task<List<Models.ProdutoPedido>> CriarListaAsync(List<CreateProdutoPedidoDTO> itens, int estabelecimentoId)
+        {
+            var lista = new List<Models.ProdutoPedido>();
+
+            foreach (var item in itens)
+            {
+                var produto = await _pedidoRepo.GetProdutoByIdAsync(item.ProdutoId)
+                    ?? throw new KeyNotFoundException($"Produto {item.ProdutoId} nao encontrado.");
+
+                lista.Add(new Models.ProdutoPedido
+                {
+                    Produto = produto,
+                    ProdutoId = produto.Id,
+                    Quantidade = item.Quantidade,
+                    EstabelecimentoId = estabelecimentoId,
+                    PrecoUnitario = produto.Preco,
+                    Subtotal = produto.Preco * item.Quantidade
+                });
+            }
+
+            return lista;
+        }
     }
 }

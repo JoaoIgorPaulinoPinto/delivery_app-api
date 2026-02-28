@@ -1,20 +1,23 @@
-﻿using comaagora.DTO;
+using comaagora.DTO;
 using comaagora.Models;
-using comaagora.Services.Endereco;
 
-public class EnderecoService: IEnderecoService
+namespace comaagora.Services.Endereco
 {
-    public Endereco CriarEndereco(CreateEnderecoDTO dto, string slug)
+    public class EnderecoService : IEnderecoService
     {
-        return new Endereco
+        public Models.Endereco CriarEndereco(CreateEnderecoDTO dto)
         {
-            Rua = dto.Rua,
-            Numero = dto.Numero,
-            Bairro = dto.Bairro,
-            Cidade = dto.Cidade,
-            Uf = dto.Uf,
-            Cep = dto.Cep,
-            Complemento = dto.Complemento,
-        };
+            return new Models.Endereco
+            {
+                Rua = dto.Rua.Trim(),
+                Numero = dto.Numero.Trim(),
+                Bairro = dto.Bairro.Trim(),
+                CidadeId = dto.Cidade,
+                UfId = dto.Uf,
+                Cep = dto.Cep.Trim(),
+                Complemento = string.IsNullOrWhiteSpace(dto.Complemento) ? null : dto.Complemento.Trim(),
+                TipoId = 1
+            };
+        }
     }
 }

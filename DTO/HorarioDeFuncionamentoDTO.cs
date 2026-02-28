@@ -1,4 +1,3 @@
-﻿using comaagora.DTO;
 using System.ComponentModel.DataAnnotations;
 
 namespace comaagora.DTO
@@ -6,10 +5,10 @@ namespace comaagora.DTO
     public class GetHorarioFuncionamentoDTO
     {
         [Required]
-        public string DiaSemana { get; set; } = "";
-        [Required]
-        public TimeSpan Abertura { get; set; }
-        [Required]
-        public TimeSpan Fechamento { get; set; }
+        [StringLength(20, MinimumLength = 2)]
+        public string DiaSemana { get; set; } = string.Empty;
+
+        public TimeOnly Abertura { get; set; }
+        public TimeOnly Fechamento { get; set; }
     }
 }

@@ -1,36 +1,47 @@
-﻿using comaagora.Data;
-using comaagora.DTO;
+using comaagora.Data;
 using comaagora.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace comaagora.Repositories
 {
     public class EstabelecimentoRepository
     {
         private readonly AppDbContext _context;
+
         public EstabelecimentoRepository(AppDbContext context)
         {
             _context = context;
         }
-        public async Task<Estabelecimento> GetBySlug(string slug)
+        public async Task<Estabelecimento?> GetBySlug(string slug)
         {
-            var est = await _context.Estabelecimentos
-                .Include(c => c.HorariosFuncionamento)
-                .Include(c => c.Endereco)
-                .Include(c => c.EstabelecimentoStatus)
-                .Where(e => e.Slug == slug)
+            if (string.IsNullOrEmpty(slug)) return null;
+
+            return await _context.Estabelecimentos
                 .AsNoTracking()
+                .Where(e => e.Slug == slug)
+                .Select(e => new Estabelecimento
+                {
+                    Id = e.Id,
+                    NomeFantasia = e.NomeFantasia,
+                    Slug = e.Slug,
+                    HorarioFuncionamentos = e.HorarioFuncionamentos,
+                    EstabelecimentoStatus = e.EstabelecimentoStatus,
+
+                    Endereco = _context.Enderecos
+                        .Where(end => end.Usuario == e.Id)
+                        .Select(end => new Endereco
+                        {
+                            Id = end.Id,
+                            Rua = end.Rua,
+                            Cidade = end.Cidade,
+                            Uf = end.Uf,
+                            Cep = end.Cep,
+                            Numero = end.Numero,
+                            Bairro = end.Bairro,
+                            Complemento = end.Complemento
+                        }).FirstOrDefault()!
+                })
                 .FirstOrDefaultAsync();
-            if (est != null)
-            {
-                return est;
-            }
-            else
-            {
-                throw new Exception(message: "Erro ao encontrar estabelecimento");
-            }
         }
     }
 }

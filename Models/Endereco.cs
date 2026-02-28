@@ -1,40 +1,46 @@
-﻿using comaagora.Models.Base;
-using System.ComponentModel.DataAnnotations;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class Endereco
 {
-    public class Endereco : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [MaxLength(8)]
-        [RegularExpression(@"^\d{8}$", ErrorMessage = "CEP deve conter exatamente 8 dígitos.")]
-        public string Cep { get; set; } = null!;
+    public int Usuario { get; set; }
 
-        [Required]
-        [MaxLength(2)]
-        public string Uf { get; set; } = null!;
+    [Column("Tipo")]
+    public int TipoId { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string Cidade { get; set; } = null!;
+    public string Cep { get; set; } = null!;
 
-        [Required]
-        [MaxLength(100)]
-        public string Rua { get; set; } = null!;
+    [Column("Uf")]
+    public int UfId { get; set; }
+    [Column("Cidade")]
+    public int CidadeId { get; set; }
 
-        [Required]
-        [MaxLength(10)]
-        public string Numero { get; set; } = null!;
+    public string Rua { get; set; } = null!;
 
-        [Required]
-        [MaxLength(100)]
-        public string Bairro { get; set; } = null!;
+    public string Numero { get; set; } = null!;
 
-        [MaxLength(100)]
-        public string? Complemento { get; set; }
-    }
+    public string Bairro { get; set; } = null!;
+
+    public string? Complemento { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual Municipio Cidade { get; set; } = null!;
+
+    public virtual TipoEndereco Tipo { get; set; } = null!;
+
+    public virtual Estado Uf { get; set; } = null!;
+
+    public virtual ICollection<Estabelecimento> Estabelecimentos { get; set; } = new List<Estabelecimento>();
+
+    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+
+    public virtual Pedido? Pedido { get; set; }
 }

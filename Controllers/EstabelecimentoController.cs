@@ -1,12 +1,10 @@
-﻿using comaagora.DTO;
 using comaagora.Services.Estabelecimento;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace comaagora.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class EstabelecimentoController : ControllerBase
     {
         private readonly IEstabelecimentoService _estabelecimentoService;
@@ -15,16 +13,18 @@ namespace comaagora.Controllers
         {
             _estabelecimentoService = estabelecimentoService;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetBySlug([FromQuery] string slug)
         {
-            var est = await _estabelecimentoService.GetBySlug(slug);
-            if (est != null ) {
-                return Ok(est);
-            }
-            else
+            try
             {
-                return NotFound(null);
+                var est = await _estabelecimentoService.GetBySlug(slug);
+                return est == null ? NotFound() : Ok(est);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
             }
         }
     }

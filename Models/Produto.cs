@@ -1,48 +1,43 @@
-﻿using comaagora.Models.Base;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class Produto
 {
-    public class Produto : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [MaxLength(255)]
-        public string Nome { get; set; } = null!;
+    public string Nome { get; set; } = null!;
 
-        [Required]
-        [MaxLength(500)]
-        public string Descricao { get; set; } = null!;
+    public string Descricao { get; set; } = null!;
 
-        [Required]
-        [MaxLength(500)]
-        [Url(ErrorMessage = "ImgUrl deve ser uma URL válida.")]
-        public string ImgUrl { get; set; } = null!;
+    public string ImgUrl { get; set; } = null!;
 
-        [Required]
-        [Column(TypeName = "decimal(10,2)")]
-        [Range(0.01, 999999.99, ErrorMessage = "Preço deve ser maior que 0.")]
-        public decimal Preco { get; set; }
+    public decimal Preco { get; set; }
 
-        [Required]
-        public int EstabelecimentoId { get; set; }
+    public int UnidadeMedidaId { get; set; }
 
-        [Required]
-        public int CategoriaId { get; set; }
+    public int EstabelecimentoId { get; set; }
 
-        [Required]
-        public int ProdutoStatusId { get; set; }
+    public int CategoriaId { get; set; }
 
-        [ForeignKey(nameof(CategoriaId))]
-        public ProdutoCategoria Categoria { get; set; } = null!;
+    public int ProdutoStatusId { get; set; }
 
-        [ForeignKey(nameof(ProdutoStatusId))]
-        public ProdutoStatus Status { get; set; } = null!;
+    [Column("Ativo?")]
+    public int? Ativo{ get; set; }
 
-        [ForeignKey(nameof(EstabelecimentoId))]
-        public Estabelecimento Estabelecimento { get; set; } = null!;
-    }
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual ProdutoCategoria Categoria { get; set; } = null!;
+
+    public virtual Estabelecimento Estabelecimento { get; set; } = null!;
+
+    public virtual ICollection<ProdutoPedido> ProdutoPedidos { get; set; } = new List<ProdutoPedido>();
+
+    public virtual ProdutoStatus ProdutoStatus { get; set; } = null!;
+
+    public virtual UnidadeMedidum UnidadeMedida { get; set; } = null!;
 }

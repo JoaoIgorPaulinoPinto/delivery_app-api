@@ -1,4 +1,3 @@
-﻿
 using System.ComponentModel.DataAnnotations;
 
 namespace comaagora.DTO
@@ -6,35 +5,41 @@ namespace comaagora.DTO
     public class CreateEnderecoDTO
     {
         [Required]
-        public string Rua { get; set; } = "";
+        [StringLength(100, MinimumLength = 3)]
+        public string Rua { get; set; } = string.Empty;
+
         [Required]
-        public string Numero { get; set; } = "";
+        [StringLength(10, MinimumLength = 1)]
+        public string Numero { get; set; } = string.Empty;
+
         [Required]
-        public string Bairro { get; set; } = "";
+        [StringLength(100, MinimumLength = 2)]
+        public string Bairro { get; set; } = string.Empty;
+
         [Required]
-        public string Cidade { get; set; } = "";
+        [Range(1, int.MaxValue)]
+        public int Cidade { get; set; }
+
         [Required]
-        public string Uf { get; set; } = "";
+        [Range(1, int.MaxValue)]
+        public int Uf { get; set; }
+
         [Required]
-        public string Cep { get; set; } = "";
+        [RegularExpression("^\\d{8}$", ErrorMessage = "CEP deve conter 8 digitos numericos.")]
+        public string Cep { get; set; } = string.Empty;
+
+        [StringLength(100)]
         public string? Complemento { get; set; }
     }
 
     public class GetEnderecoDTO
     {
-        [Required]
-        public string Rua { get; set; } = "";
-        [Required]
-        public string Numero { get; set; } = "";
-        [Required]
-        public string Bairro { get; set; } = "";
-        [Required]
-        public string Cidade { get; set; } = "";
-        [Required]
-        public string Uf { get; set; } = "";
-        [Required] 
-        public string Cep { get; set; } = "";
+        public string Rua { get; set; } = string.Empty;
+        public string Numero { get; set; } = string.Empty;
+        public string Bairro { get; set; } = string.Empty;
+        public int Cidade { get; set; }
+        public int Uf { get; set; }
+        public string Cep { get; set; } = string.Empty;
         public string? Complemento { get; set; }
     }
-
 }

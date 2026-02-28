@@ -1,31 +1,29 @@
-﻿using comaagora.Models.Base;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class Status
 {
-    public class Status : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string Nome { get; set; } = null!;
-        // Exemplo: "Ativo", "Inativo", "Indisponível"
+    public string Nome { get; set; } = null!;
 
-        [Required]
-        [MaxLength(20)]
-        public string Codigo { get; set; } = null!;
-        // Exemplo: "ativo", "inativo", "indisponivel"
+    public string Codigo { get; set; } = null!;
 
-        [Required]
-        public int EstabelecimentoId { get; set; }
+    public int EstabelecimentoId { get; set; }
 
-        [ForeignKey(nameof(EstabelecimentoId))]
-        public Estabelecimento Estabelecimento { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
 
-        public ICollection<ProdutoCategoria> Categorias { get; set; } = new List<ProdutoCategoria>();
-        public ICollection<Produto> Produtos { get; set; } = new List<Produto>();
-    }
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual Estabelecimento Estabelecimento { get; set; } = null!;
+
+    public virtual ICollection<EstabelecimentoCategorium> EstabelecimentoCategoria { get; set; } = new List<EstabelecimentoCategorium>();
+
+    public virtual ICollection<PedidoStatus> PedidoStatuses { get; set; } = new List<PedidoStatus>();
+
+    public virtual ICollection<ProdutoCategoria> ProdutoCategoria { get; set; } = new List<ProdutoCategoria>();
+
+    public virtual ICollection<ProdutoStatus> ProdutoStatuses { get; set; } = new List<ProdutoStatus>();
 }

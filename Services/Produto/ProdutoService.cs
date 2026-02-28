@@ -1,5 +1,4 @@
-﻿using comaagora.DTO;
-using comaagora.Models;
+using comaagora.DTO;
 using comaagora.Repositories;
 
 namespace comaagora.Services.Produto
@@ -15,83 +14,86 @@ namespace comaagora.Services.Produto
 
         public async Task<List<GetProdutoDTO>> GetAll(string slug)
         {
-            var produtos = await _repository.GetAllByEstabelecimentoAsync(slug);
-
-            return produtos.Select(p => new GetProdutoDTO
+            var normalizedSlug = slug?.Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(normalizedSlug))
             {
-                Id = p.Id,
-                Nome = p.Nome,
-                Preco = p.Preco,
-                ImgUrl = p.ImgUrl,
-                Descricao = p.Descricao,
-                Categoria = new ProdutoCategoriaDTO
-                {
-                    Id = p.Categoria.Id,
-                    Nome = p.Categoria.Nome ?? string.Empty,
-                },
-                Status = new DTO.ProdutoStatusDTO
-                {
-                    Nome = p.Status.Nome,
-                    Id = p.Status.Id,
-                }
-            }).ToList();
+                throw new ArgumentException("Slug do estabelecimento e obrigatorio.");
+            }
+
+            var produtos = await _repository.GetAllByEstabelecimentoAsync(normalizedSlug);
+            return produtos.Select(MapProduto).ToList();
         }
 
-        public async Task<GetProdutoDTO> GetByID(int id)
+        public async Task<GetProdutoDTO> GetById(int id)
         {
-            var p = await _repository.GetByIdAsync(id);
-
-            if (p == null)
-                throw new KeyNotFoundException("Produto não encontrado");
-
-            return new GetProdutoDTO
+            if (id <= 0)
             {
-                Id = p.Id,
-                Nome = p.Nome,
-                Preco = p.Preco,
-                Descricao = p.Descricao,
-                ImgUrl = p.ImgUrl,
-                Categoria = new ProdutoCategoriaDTO
-                {
-                    Id = p.Categoria.Id,
-                    Nome = p.Categoria.Nome ?? string.Empty,
-                },
-                Status = new DTO.ProdutoStatusDTO
-                {
-                    Nome = p.Status.Nome,
-                    Id = p.Status.Id,
-                }
-            };
+                throw new ArgumentException("Id do produto invalido.");
+            }
+
+            var produto = await _repository.GetByIdAsync(id)
+                ?? throw new KeyNotFoundException("Produto nao encontrado.");
+
+            return MapProduto(produto);
         }
+
         public async Task<bool> Update(CreateProdutoDTO produto, int id)
         {
-            var p = await _repository.UpdateAsync(produto, id);
+            if (id <= 0)
+            {
+                throw new ArgumentException("Id do produto invalido.");
+            }
 
-            if (p == false)
-                throw new KeyNotFoundException("Produto não encontrado");
+            var updated = await _repository.UpdateAsync(produto, id);
+            if (!updated)
+            {
+                throw new KeyNotFoundException("Produto nao encontrado.");
+            }
 
             return true;
-
         }
-        public async Task<bool> CreateProduto(CreateProdutoDTO dto, int id)
+
+        public async Task<bool> CreateProduto(CreateProdutoDTO dto, int estabelecimentoId)
         {
+            if (estabelecimentoId <= 0)
+            {
+                throw new ArgumentException("Id do estabelecimento invalido.");
+            }
+
             var novoProduto = new Models.Produto
             {
-                Nome = dto.Nome,
-                Descricao = dto.Descricao,
-                ImgUrl = dto.ImgUrl,
+                Nome = dto.Nome.Trim(),
+                Descricao = dto.Descricao.Trim(),
+                ImgUrl = dto.ImgUrl.Trim(),
                 Preco = dto.Preco,
                 CategoriaId = dto.CategoriaId,
                 ProdutoStatusId = dto.StatusId,
-                EstabelecimentoId = id // Vincula ao restaurante logado
+                EstabelecimentoId = estabelecimentoId
             };
 
-            var p = await _repository.CreateAsync(novoProduto, id);
+            return await _repository.CreateAsync(novoProduto);
+        }
 
-            if (p == false)
-                throw new KeyNotFoundException("Erro ao criar");
-
-            return true;
+        private static GetProdutoDTO MapProduto(Models.Produto produto)
+        {
+            return new GetProdutoDTO
+            {
+                Id = produto.Id,
+                Nome = produto.Nome,
+                Preco = produto.Preco,
+                ImgUrl = produto.ImgUrl,
+                Descricao = produto.Descricao,
+                Categoria = new ProdutoCategoriaDTO
+                {
+                    Id = produto.Categoria?.Id ?? 0,
+                    Nome = produto.Categoria?.Nome ?? string.Empty
+                },
+                Status = new ProdutoStatusDTO
+                {
+                    Id = produto.ProdutoStatus?.Id ?? 0,
+                    Nome = produto.ProdutoStatus?.Nome ?? string.Empty
+                }
+            };
         }
     }
 }

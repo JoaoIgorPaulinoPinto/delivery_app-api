@@ -1,24 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
-using comaagora.Models.Base;
+﻿using System;
+using System.Collections.Generic;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class ProdutoStatus
 {
-    public class ProdutoStatus : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [MaxLength(20)]
-        public string Nome { get; set; } = null!;
+    public string Nome { get; set; } = null!;
 
-        [Required]
-        public int StatusId { get; set; }
-        public virtual Status Status { get; set; } = null!; // virtual ajuda no Lazy Loading
+    public int StatusId { get; set; }
 
-        public int EstabelecimentoId { get; set; }
-        public virtual Estabelecimento? Estabelecimento { get; set; }
+    public int EstabelecimentoId { get; set; }
 
-        public virtual ICollection<Produto> Produtos { get; set; } = new List<Produto>();
-    }
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual Estabelecimento Estabelecimento { get; set; } = null!;
+
+    public virtual ICollection<Produto> Produtos { get; set; } = new List<Produto>();
+
+    public virtual Status Status { get; set; } = null!;
 }

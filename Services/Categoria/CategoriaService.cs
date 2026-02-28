@@ -1,5 +1,4 @@
-﻿using comaagora.DTO;
-using comaagora.Models;
+using comaagora.DTO;
 using comaagora.Repositories;
 
 namespace comaagora.Services.Categoria
@@ -7,17 +6,25 @@ namespace comaagora.Services.Categoria
     public class CategoriaService : ICategoriaService
     {
         private readonly CategoriaRepository _repo;
+
         public CategoriaService(CategoriaRepository repository)
         {
             _repo = repository;
         }
-        public async Task<List<GetCateriaDTO>> GetCategorias(string slug)
+
+        public async Task<List<GetCategoriaDTO>> GetCategorias(string slug)
         {
-            List<ProdutoCategoria> lista = await _repo.GetCategorias(slug);
-            return lista.Select(c => new GetCateriaDTO
+            var normalizedSlug = slug?.Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(normalizedSlug))
+            {
+                throw new ArgumentException("Slug do estabelecimento e obrigatorio.");
+            }
+
+            var categorias = await _repo.GetCategorias(normalizedSlug);
+            return categorias.Select(c => new GetCategoriaDTO
             {
                 Id = c.Id,
-                Nome = c.Nome,
+                Nome = c.Nome
             }).ToList();
         }
     }

@@ -1,32 +1,25 @@
-﻿using comaagora.Models.Base;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class MetodoPagamento
 {
-    public class MetodoPagamento : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public string Nome { get; set; } = null!;
+    public string Nome { get; set; } = null!;
 
-        [Required]
-        [MaxLength(50)]
-        public string Tipo { get; set; } = null!;
-        // Exemplo: "Cartão", "Pix", "Dinheiro"
+    public string Tipo { get; set; } = null!;
 
-        [Required]
-        public bool Ativo { get; set; } = true;
+    public bool Ativo { get; set; }
 
-        [Required]
-        public int EstabelecimentoId { get; set; }
+    public int EstabelecimentoId { get; set; }
 
-        [ForeignKey(nameof(EstabelecimentoId))]
-        public Estabelecimento Estabelecimento { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
 
-        public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
-    }
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual Estabelecimento Estabelecimento { get; set; } = null!;
+
+    public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
 }

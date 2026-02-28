@@ -1,45 +1,37 @@
-﻿using comaagora.Models.Base;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System;
+using System.Collections.Generic;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class Pedido
 {
-    public class Pedido : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        public int EstabelecimentoId { get; set; }
+    public int EstabelecimentoId { get; set; }
 
-        [Required]
-        public int PedidoStatusId { get; set; }
+    public int PedidoStatusId { get; set; }
 
-        [MaxLength(500)]
-        public string Observacao { get; set; } = string.Empty;
+    public string Observacao { get; set; } = null!;
 
-        [Required]
-        public int UsuarioId { get; set; }
+    public int UsuarioId { get; set; }
 
-        [Required]
-        public int MetodoPagamentoId { get; set; }
+    public int MetodoPagamentoId { get; set; }
 
-        [ForeignKey(nameof(EstabelecimentoId))]
-        public Estabelecimento Estabelecimento { get; set; } = null!;
+    public int EnderecoId { get; set; }
 
-        [Required]
-        public int EnderecoId { get; set; }
-        [ForeignKey(nameof(EnderecoId))]
-        public Endereco Endereco { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
 
-        [ForeignKey(nameof(UsuarioId))]
-        public Usuario Usuario { get; set; } = null!;
+    public DateTime UpdatedAt { get; set; }
 
-        [ForeignKey(nameof(PedidoStatusId))]
-        public PedidoStatus PedidoStatus { get; set; } = null!;
+    public virtual Endereco Endereco { get; set; } = null!;
 
-        [ForeignKey(nameof(MetodoPagamentoId))]
-        public MetodoPagamento MetodoPagamento { get; set; } = null!;
-        public ICollection<ProdutoPedido> Produtos { get; set; } = new List<ProdutoPedido>();
-    }
+    public virtual Estabelecimento Estabelecimento { get; set; } = null!;
+
+    public virtual MetodoPagamento MetodoPagamento { get; set; } = null!;
+
+    public virtual PedidoStatus PedidoStatus { get; set; } = null!;
+
+    public virtual Usuario Usuario { get; set; } = null!;
+
+    public virtual ICollection<ProdutoPedido> ProdutoPedidos { get; set; } = new List<ProdutoPedido>();
 }

@@ -1,22 +1,19 @@
-﻿using comaagora.Models.Base;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class EstabelecimentoStatus
 {
-    public class EstabelecimentoStatus : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string Nome { get; set; } = null!;
+    public string Nome { get; set; } = null!;
 
-        [Required]
-        [MaxLength(20)]
-        public string Codigo { get; set; } = null!;
-        // Exemplo: "ativo", "inativo", "suspenso"
+    public string Codigo { get; set; } = null!;
 
-        public ICollection<Estabelecimento> Estabelecimentos { get; set; } = new List<Estabelecimento>();
-    }
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual ICollection<Estabelecimento> Estabelecimentos { get; set; } = new List<Estabelecimento>();
 }

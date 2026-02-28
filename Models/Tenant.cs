@@ -1,27 +1,25 @@
-﻿using comaagora.Models.Base;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class Tenant
 {
-    public class Tenant : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [MaxLength(255)]
-        public string Nome { get; set; } = null!;
+    public int ContratanteId { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public string Plano { get; set; } = "free"; 
-        // Exemplo: "free", "pro", "enterprise"
+    public string Plano { get; set; } = null!;
 
-        [Required]
-        [MaxLength(20)]
-        public string Status { get; set; } = "ativo"; 
-        // Exemplo: "ativo", "suspenso", "cancelado"
+    public string Status { get; set; } = null!;
 
-        public ICollection<Estabelecimento> Estabelecimentos { get; set; } = new List<Estabelecimento>();
-    }
+    public byte[]? ContratoAnexo { get; set; }
+
+    public string? TipoArquivo { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual ICollection<Estabelecimento> Estabelecimentos { get; set; } = new List<Estabelecimento>();
 }

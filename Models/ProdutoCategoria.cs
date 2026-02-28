@@ -1,31 +1,25 @@
-﻿using comaagora.Models.Base;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class ProdutoCategoria
 {
-    public class ProdutoCategoria : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public string Nome { get; set; } = null!;
+    public string Nome { get; set; } = null!;
 
-        [Required]
-        public int StatusId { get; set; }
+    public int StatusId { get; set; }
 
-        [Required]
-        public int EstabelecimentoId { get; set; }
+    public int EstabelecimentoId { get; set; }
 
-        [ForeignKey(nameof(EstabelecimentoId))]
-        public Estabelecimento Estabelecimento { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
 
-        [ForeignKey(nameof(StatusId))]
-        public Status Status { get; set; } = null!;
+    public DateTime UpdatedAt { get; set; }
 
-        public ICollection<Produto> Produtos { get; set; } = new List<Produto>();
+    public virtual Estabelecimento Estabelecimento { get; set; } = null!;
 
-    }
+    public virtual ICollection<Produto> Produtos { get; set; } = new List<Produto>();
+
+    public virtual Status Status { get; set; } = null!;
 }

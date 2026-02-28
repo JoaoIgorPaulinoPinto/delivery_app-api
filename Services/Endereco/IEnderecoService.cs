@@ -1,9 +1,10 @@
-﻿using comaagora.DTO;
+using comaagora.DTO;
+using comaagora.Models;
 
 namespace comaagora.Services.Endereco
 {
     public interface IEnderecoService
     {
-        public Models.Endereco CriarEndereco(CreateEnderecoDTO dto, string slug);
+        Models.Endereco CriarEndereco(CreateEnderecoDTO dto);
     }
 }

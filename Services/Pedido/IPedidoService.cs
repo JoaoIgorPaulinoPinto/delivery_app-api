@@ -1,14 +1,14 @@
-﻿using comaagora.DTO;
-using comaagora.Models;
+using comaagora.DTO;
 
 namespace comaagora.Services.Pedido
 {
     public interface IPedidoService
     {
-        public Task<GetPedidoDTO> CreatePedido(string? clientKey, string slug, CreatePedidoDTO dto);
-        public Task<List<GetPedidoDTO>> GetPedidosByClientKey(string clientKey, string slug);
-        public Task<GetPedidoDTO> GetPedidoById(int id);
-        public Task<List<GetPedidoDTO>> GetPedidos(string slug);
-        public Task<bool> UpdatePedido(UpdatePedidoDTO dto, int id);
+        Task<GetPedidoDTO> CreatePedido(string? clientKey, string slug, CreatePedidoDTO dto);
+        Task<List<GetPedidoDTO>> GetPedidosByClientKey(string clientKey, string slug);
+        Task<GetPedidoDTO> GetPedidoById(int id);
+        Task<List<GetPedidoDTO>> GetPedidos(string slug);
+        Task<bool> UpdatePedido(UpdatePedidoDTO dto, int id);
+        Task<List<PedidoStatusDTO>> GetPedidoStatus(int estabelecimentoId);
     }
 }

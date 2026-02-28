@@ -1,31 +1,37 @@
-﻿using comaagora.Models;
 using comaagora.DTO;
+using comaagora.Models;
 using comaagora.Repositories;
 
-public class UsuarioService : IUsuarioService
+namespace comaagora.Services.Usuario
 {
-    private readonly UsuarioRepository _usuarioRepo;
-
-    public UsuarioService(UsuarioRepository usuarioRepo)
+    public class UsuarioService : IUsuarioService
     {
-        _usuarioRepo = usuarioRepo;
-    }
+        private readonly UsuarioRepository _usuarioRepo;
 
-    public async Task<Usuario> ResolverUsuario(string? clientKey, int estId, CreateUsuarioDTO dto)
-    {
-        if (!string.IsNullOrWhiteSpace(clientKey))
+        public UsuarioService(UsuarioRepository usuarioRepo)
         {
-            var usuario = await _usuarioRepo.GetByClientKey(clientKey.Trim().ToLower(), estId);
-            if (usuario != null)
-                return usuario;
+            _usuarioRepo = usuarioRepo;
         }
 
-        return new Usuario
+        public async Task<Models.Usuario> ResolverUsuario(string? clientKey, int estId, CreateUsuarioDTO dto)
         {
-            Nome = dto.Nome,
-            Telefone = dto.Telefone,
-            EstabelecimentoId = estId,
-            ClientKey = Guid.NewGuid().ToString("N")
-        };
+            if (!string.IsNullOrWhiteSpace(clientKey))
+            {
+                var normalizedClientKey = clientKey.Trim().ToLowerInvariant();
+                var usuario = await _usuarioRepo.GetByClientKey(normalizedClientKey, estId);
+                if (usuario != null)
+                {
+                    return usuario;
+                }
+            }
+
+            return new Models.Usuario
+            {
+                Nome = dto.Nome.Trim(),
+                Telefone = dto.Telefone.Trim(),
+                EstabelecimentoId = estId,
+                ClientKey = Guid.NewGuid().ToString("N")
+            };
+        }
     }
 }

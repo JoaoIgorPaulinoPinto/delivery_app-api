@@ -1,7 +1,10 @@
-﻿using comaagora.Models;
 using comaagora.DTO;
+using comaagora.Models;
 
-public interface IProdutoPedidoService
+namespace comaagora.Services.ProdutoPedido
 {
-    Task<List<ProdutoPedido>> CriarListaAsync(List<CreateProdutoPedidoDTO> itens, int estabelecimentoId);
+    public interface IProdutoPedidoService
+    {
+        Task<List<Models.ProdutoPedido>> CriarListaAsync(List<CreateProdutoPedidoDTO> itens, int estabelecimentoId);
+    }
 }

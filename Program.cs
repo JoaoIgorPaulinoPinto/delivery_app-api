@@ -1,4 +1,4 @@
-﻿using comaagora.Data;
+using comaagora.Data;
 using comaagora.Repositories;
 using comaagora.Services.Categoria;
 using comaagora.Services.Endereco;
@@ -6,35 +6,29 @@ using comaagora.Services.Estabelecimento;
 using comaagora.Services.MetodoPagamento;
 using comaagora.Services.Pedido;
 using comaagora.Services.Produto;
+using comaagora.Services.ProdutoPedido;
+using comaagora.Services.Usuario;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var conn = builder.Configuration.GetConnectionString("DefaultConnection");
     options.UseMySql(conn, ServerVersion.AutoDetect(conn));
-
-
 });
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader(); 
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
-
 
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IEnderecoService, EnderecoService>();
@@ -60,10 +54,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 app.UseCors("AllowAll");
-app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

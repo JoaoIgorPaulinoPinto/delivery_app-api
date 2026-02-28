@@ -1,45 +1,29 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class Usuario
 {
-    public class Usuario
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [MaxLength(255)]
-        public string Nome { get; set; } = null!;
+    public string Nome { get; set; } = null!;
 
-        [Required]
-        [MaxLength(100)]
-        public string ClientKey { get; set; } = null!;
-        // Pode ser token ou identificador único
+    public string ClientKey { get; set; } = null!;
 
-        [Required]
-        [Phone]
-        [MaxLength(20)]
-        public string Telefone { get; set; } = null!;
+    public string Telefone { get; set; } = null!;
 
-        [Required]
-        public int EnderecoId { get; set; }
+    public int EnderecoId { get; set; }
 
-        [Required]
-        public int EstabelecimentoId { get; set; }
+    public int EstabelecimentoId { get; set; }
 
-        [ForeignKey(nameof(EstabelecimentoId))]
-        public Estabelecimento Estabelecimento { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
 
-        [ForeignKey(nameof(EnderecoId))]
-        public Endereco Endereco { get; set; } = null!;
+    public DateTime? UpdatedAt { get; set; }
 
-        public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+    public virtual Endereco Endereco { get; set; } = null!;
 
-        // Auditoria opcional
-        [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public virtual Estabelecimento Estabelecimento { get; set; } = null!;
 
-        public DateTime? UpdatedAt { get; set; }
-    }
+    public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
 }

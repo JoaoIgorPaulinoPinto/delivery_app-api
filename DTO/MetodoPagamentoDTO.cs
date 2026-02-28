@@ -1,14 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace comaagora.DTO
 {
     public class MetodoPagamentoDTO
     {
-        [Required]
         public int Id { get; set; }
+
         [Required]
-        public string Nome { get; set; } = null!;
+        [StringLength(100, MinimumLength = 2)]
+        public string Nome { get; set; } = string.Empty;
+
         [Required]
-        public string Tipo { get; set; } = null!;
+        [StringLength(50, MinimumLength = 2)]
+        public string Tipo { get; set; } = string.Empty;
     }
 }

@@ -1,6 +1,4 @@
-﻿using comaagora.DTO;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using comaagora.DTO;
 
 namespace comaagora.Services.MetodoPagamento
 {

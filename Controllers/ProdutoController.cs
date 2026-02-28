@@ -1,6 +1,5 @@
-﻿using comaagora.Data;
+using comaagora.Data;
 using comaagora.DTO;
-using comaagora.Models;
 using comaagora.Services.Produto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace comaagora.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ProdutoController : ControllerBase
     {
         private readonly IProdutoService _produtoService;
@@ -20,64 +19,84 @@ namespace comaagora.Controllers
             _produtoService = produtoService;
         }
         [HttpGet]
-        public async Task<IActionResult> Get([FromHeader] string slug)
+        public async Task<IActionResult> Get([FromQuery] string slug) 
         {
-            try
-            {
-                return Ok(await _produtoService.GetAll(slug));
+            if (string.IsNullOrEmpty(slug))
+                return BadRequest(new { error = "The slug field is required." });
 
-            }
-            catch (Exception ex) { 
-                return BadRequest(ex.Message);
-            }
-        }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromHeader]string slug, int id)
-        {
             try
             {
-                return Ok(await _produtoService.GetByID(id));
+                var produtos = await _produtoService.GetAll(slug);
+                return Ok(produtos);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = ex.Message });
             }
         }
-        [HttpPut("Update")]
-        public async Task<IActionResult> UpdateProduto(CreateProdutoDTO produto, int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var res = await _produtoService.Update(produto, id);
-            if (res)
+            try
             {
-                return Ok(new { message = "Pedido atualizado" });
+                return Ok(await _produtoService.GetById(id));
             }
-            else
+            catch (ArgumentException ex)
             {
-                return NotFound(new { message = "Produto não encontrado." });
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
         }
-        [HttpPost("Create")]
-        public async Task<IActionResult> CreateProduto(CreateProdutoDTO produto, int estabelecimentoId)
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateProduto(int id, [FromBody] CreateProdutoDTO produto)
         {
-            var res = await _produtoService.CreateProduto(produto, estabelecimentoId);
-            if (res)
+            try
             {
-                return Ok(new { message = "Produto Criado!" });
+                await _produtoService.Update(produto, id);
+                return Ok(new { message = "Produto atualizado com sucesso." });
             }
-            else
+            catch (ArgumentException ex)
             {
-                return NotFound(new { message = "Erro ao criar produto" });
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
         }
-        [HttpGet("Status")]
-        public ActionResult GetProdutoStatus([FromHeader] int EstabelecimentoId)
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProduto([FromBody] CreateProdutoDTO produto, [FromQuery] int estabelecimentoId)
         {
+            try
+            {
+                await _produtoService.CreateProduto(produto, estabelecimentoId);
+                return Ok(new { message = "Produto criado com sucesso." });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("status")]
+        public ActionResult GetProdutoStatus([FromHeader(Name = "estabelecimentoId")] int estabelecimentoId)
+        {
+            if (estabelecimentoId <= 0)
+            {
+                return BadRequest(new { error = "Estabelecimento invalido." });
+            }
+
             return Ok(_context.ProdutoStatus.AsNoTracking()
-                .Where(e => e.EstabelecimentoId == EstabelecimentoId)
+                .Where(e => e.EstabelecimentoId == estabelecimentoId)
                 .Select(c => new ProdutoStatusDTO
                 {
                     Id = c.Id,
-                    Nome = c.Nome ?? "",
+                    Nome = c.Nome
                 }).ToList());
         }
     }

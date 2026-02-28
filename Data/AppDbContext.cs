@@ -1,12 +1,14 @@
-﻿using comaagora.Models;
-using comaagora.Models.Base;
+using comaagora.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace comaagora.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+
         public DbSet<Estabelecimento> Estabelecimentos { get; set; }
         public DbSet<EstabelecimentoStatus> EstabelecimentoStatus { get; set; }
         public DbSet<Produto> Produtos { get; set; }
@@ -14,7 +16,7 @@ namespace comaagora.Data
         public DbSet<Status> Status { get; set; }
         public DbSet<EstabelecimentoCategoria> EstabelecimentoCategoria { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
-        public DbSet<ProdutoPedido> ProdutoPedidos {  get; set; }
+        public DbSet<ProdutoPedido> ProdutoPedidos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }
         public DbSet<MetodoPagamento> MetodoPagamento { get; set; }
@@ -25,33 +27,52 @@ namespace comaagora.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
-                {
-                    modelBuilder.Entity(entityType.ClrType)
-                        .Property(nameof(BaseEntity.CreatedAt))
-                        .ValueGeneratedOnAdd();
+            modelBuilder.Entity<Estabelecimento>()
+                .HasOne(e => e.Endereco)
+                .WithMany(e => e.Estabelecimentos)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                    modelBuilder.Entity(entityType.ClrType)
-                        .Property(nameof(BaseEntity.UpdatedAt))
-                        .ValueGeneratedOnAddOrUpdate();
-                }
-            }
+            modelBuilder.Entity<Endereco>()
+                .HasOne(e => e.Cidade)
+                .WithMany(c => c.Enderecos)
+                .HasForeignKey(e => e.CidadeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Endereco>()
+                .HasOne(e => e.Uf)
+                .WithMany(u => u.Enderecos)
+                .HasForeignKey(e => e.UfId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Endereco>()
+                .HasOne(e => e.Tipo)
+                .WithMany(t => t.Enderecos)
+                .HasForeignKey(e => e.TipoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.Endereco)
+                .WithMany(e => e.Usuarios)
+                .HasForeignKey(u => u.EnderecoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Pedido>()
-             .HasOne(p => p.MetodoPagamento)
-             .WithMany(mp => mp.Pedidos)
-             .HasForeignKey(p => p.MetodoPagamentoId)
-             .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(p => p.Usuario)
+                .WithMany(u => u.Pedidos)
+                .HasForeignKey(p => p.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Pedido>()
                 .HasOne(p => p.Endereco)
-                .WithOne()
+                .WithOne(e => e.Pedido)
                 .HasForeignKey<Pedido>(p => p.EnderecoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
-
+            modelBuilder.Entity<Pedido>()
+                .HasOne(p => p.MetodoPagamento)
+                .WithMany(mp => mp.Pedidos)
+                .HasForeignKey(p => p.MetodoPagamentoId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
-
     }
 }

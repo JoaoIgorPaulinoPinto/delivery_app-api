@@ -1,4 +1,4 @@
-﻿using comaagora.Data;
+using comaagora.Data;
 using comaagora.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,12 +12,12 @@ namespace comaagora.Repositories
         {
             _context = context;
         }
-        // UsuarioRepository
+
         public async Task<Usuario?> GetByClientKey(string clientKey, int estId)
         {
             return await _context.Usuarios
+                .Include(u => u.Endereco)
                 .FirstOrDefaultAsync(u => u.ClientKey == clientKey && u.EstabelecimentoId == estId);
         }
-
     }
 }

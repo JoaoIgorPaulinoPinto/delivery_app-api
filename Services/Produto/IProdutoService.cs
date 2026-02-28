@@ -1,13 +1,12 @@
-﻿using comaagora.DTO;
-using comaagora.Models;
+using comaagora.DTO;
 
 namespace comaagora.Services.Produto
 {
     public interface IProdutoService
     {
-        public Task<List<GetProdutoDTO>> GetAll(string slug);
-        public Task<GetProdutoDTO> GetByID(int id);
-        public Task<bool> Update(CreateProdutoDTO produto, int id);
-        public Task<bool> CreateProduto(CreateProdutoDTO dto, int id);
+        Task<List<GetProdutoDTO>> GetAll(string slug);
+        Task<GetProdutoDTO> GetById(int id);
+        Task<bool> Update(CreateProdutoDTO produto, int id);
+        Task<bool> CreateProduto(CreateProdutoDTO dto, int estabelecimentoId);
     }
 }

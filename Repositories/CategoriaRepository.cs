@@ -1,5 +1,4 @@
-﻿using comaagora.Data;
-using comaagora.DTO;
+using comaagora.Data;
 using comaagora.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +12,14 @@ namespace comaagora.Repositories
         {
             _context = context;
         }
+
         public async Task<List<ProdutoCategoria>> GetCategorias(string slug)
         {
-            return await _context.ProdutoCategorias.AsNoTracking()
-                              .Where(e => e.Estabelecimento.Slug == slug).ToListAsync();
+            return await _context.ProdutoCategorias
+                .AsNoTracking()
+                .Where(c => c.Estabelecimento.Slug == slug)
+                .OrderBy(c => c.Nome)
+                .ToListAsync();
         }
     }
 }

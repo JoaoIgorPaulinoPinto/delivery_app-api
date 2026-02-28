@@ -1,23 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
-using comaagora.Models.Base;
+﻿using System;
+using System.Collections.Generic;
 
-namespace comaagora.Models
+namespace comaagora.Models;
+
+public partial class PedidoStatus
 {
-    public class PedidoStatus : BaseEntity
-    {
-        [Key]
-        public int Id { get; set; }
-        [Required]
-        [MaxLength(20)]
-        public string Nome { get; set; } = null!;
-        // Exemplo: "Pendente", "Preparando", "Entregue", "Cancelado"
-        [Required]
-        public int StatusId { get; set; }
-        [Required]
-        public Status Status { get; set; } = new();
-        public int EstabelecimentoId { get; set; }
-        public Estabelecimento? Estabelecimento { get; set; }
-        public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
-    }
+    public int Id { get; set; }
 
+    public string Nome { get; set; } = null!;
+
+    public int StatusId { get; set; }
+
+    public int EstabelecimentoId { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual Estabelecimento Estabelecimento { get; set; } = null!;
+
+    public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+
+    public virtual Status Status { get; set; } = null!;
 }

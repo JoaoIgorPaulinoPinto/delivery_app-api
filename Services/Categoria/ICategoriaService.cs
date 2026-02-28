@@ -1,10 +1,9 @@
-﻿using comaagora.DTO;
-using System.Reflection.Metadata;
+using comaagora.DTO;
 
 namespace comaagora.Services.Categoria
 {
-    public interface ICategoriaService 
+    public interface ICategoriaService
     {
-        public Task<List<GetCateriaDTO>> GetCategorias(string slug);
+        Task<List<GetCategoriaDTO>> GetCategorias(string slug);
     }
 }
