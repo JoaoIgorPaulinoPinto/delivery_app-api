@@ -1,15 +1,18 @@
 using comaagora.DTO;
 using comaagora.Repositories;
+using comaagora.Services.Endereco;
 
 namespace comaagora.Services.Estabelecimento
 {
     public class EstabelecimentoService : IEstabelecimentoService
     {
         private readonly EstabelecimentoRepository _repo;
+        private readonly IEnderecoService _enderecoService;
 
-        public EstabelecimentoService(EstabelecimentoRepository repo)
+        public EstabelecimentoService(EstabelecimentoRepository repo, IEnderecoService enderecoService)
         {
             _repo = repo;
+            _enderecoService = enderecoService;
         }
 
         public async Task<GetEstabelecimentoDTO?> GetBySlug(string slug)
@@ -26,6 +29,8 @@ namespace comaagora.Services.Estabelecimento
                 return null;
             }
 
+            var endereco = await _enderecoService.GetByUsuarioIdAsync(estabelecimento.Id);
+
             return new GetEstabelecimentoDTO
             {
                 Id = estabelecimento.Id,
@@ -34,17 +39,17 @@ namespace comaagora.Services.Estabelecimento
                 Telefone = estabelecimento.Telefone,
                 Email = estabelecimento.Email,
                 Whatsapp = estabelecimento.Whatsapp,
-                Endereco = estabelecimento.Endereco == null
+                Endereco = endereco == null
                     ? new GetEnderecoEstabelecimentoDTO()
                     : new GetEnderecoEstabelecimentoDTO()
-                    {   
-                        Rua = estabelecimento.Endereco.Rua,
-                        Numero = estabelecimento.Endereco.Numero,
-                        Bairro = estabelecimento.Endereco.Bairro,
-                        Cidade = estabelecimento.Endereco.Cidade?.Nome ?? string.Empty,
-                        Uf = estabelecimento.Endereco.Uf?.Uf ?? string.Empty,
-                        Cep = estabelecimento.Endereco.Cep,
-                        Complemento = estabelecimento.Endereco.Complemento
+                    {
+                        Rua = endereco.Rua,
+                        Numero = endereco.Numero,
+                        Bairro = endereco.Bairro,
+                        Cidade = endereco.Cidade?.Nome ?? string.Empty,
+                        Uf = endereco.Uf?.Uf ?? string.Empty,
+                        Cep = endereco.Cep,
+                        Complemento = endereco.Complemento
                     },
                 TaxaEntrega = estabelecimento.TaxaEntrega,
                 PedidoMinimo = estabelecimento.PedidoMinimo,

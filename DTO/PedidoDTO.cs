@@ -58,7 +58,9 @@ namespace comaagora.DTO
         public int MetodoPagamentoId { get; set; }
         public string Observacao { get; set; } = string.Empty;
         public GetEstabelecimentoDTO Estabelecimento { get; set; } = new();
-        public GetUsuarioDTO Usuario { get; set; } = new();
+        public string Nome { get; set; } = string.Empty;
+        public string Telefone { get; set; } = string.Empty;
+        public string ClientKey { get; set; } = string.Empty;
         public List<GetProdutoPedidoDTO> Produtos { get; set; } = new();
     }
 

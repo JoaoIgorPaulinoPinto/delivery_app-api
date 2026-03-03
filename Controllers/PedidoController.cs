@@ -1,6 +1,7 @@
 using comaagora.DTO;
 using comaagora.Services.Pedido;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace comaagora.Controllers
 {
@@ -17,13 +18,14 @@ namespace comaagora.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create(
-            [FromHeader(Name = "slug")] string slug,
-            [FromQuery] string? clientKey,
+            [FromHeader(Name = "clientKey")] string? clientKey,
+            [FromQuery] string slug,
             [FromBody] CreatePedidoDTO dto)
         {
             try
             {
                 var pedido = await _pedidoService.CreatePedido(clientKey, slug, dto);
+                Response.Headers["clientKey"] = pedido.ClientKey;
                 return CreatedAtAction(nameof(GetById), new { id = pedido.Id }, pedido);
             }
             catch (ArgumentException ex)
@@ -33,6 +35,14 @@ namespace comaagora.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { error = ex.Message });
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest(new { error = "Falha ao persistir pedido. Verifique os dados informados." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = ex.Message });
             }
         }
 

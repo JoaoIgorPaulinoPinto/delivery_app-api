@@ -20,11 +20,15 @@ namespace comaagora.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddEnderecoAsync(Endereco endereco)
+        {
+            _context.Enderecos.Add(endereco);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> UpdatePedido(UpdatePedidoDTO dto, int id)
         {
             var pedidoNoBanco = await _context.Pedidos
-                .Include(p => p.Usuario)
-                .Include(p => p.Endereco)
                 .Include(p => p.ProdutoPedidos)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -33,19 +37,26 @@ namespace comaagora.Repositories
                 return false;
             }
 
-            pedidoNoBanco.Usuario.Nome = dto.Nome.Trim();
-            pedidoNoBanco.Usuario.Telefone = dto.Telefone.Trim();
+            var endereco = await _context.Enderecos.FirstOrDefaultAsync(e => e.Usuario == pedidoNoBanco.Id);
+            if (endereco == null)
+            {
+                return false;
+            }
+
+            pedidoNoBanco.NomeCliente = dto.Nome.Trim();
+            pedidoNoBanco.TelefoneCliente = dto.Telefone.Trim();
             pedidoNoBanco.PedidoStatusId = dto.PedidoStatus.Id;
             pedidoNoBanco.MetodoPagamentoId = dto.MetodoPagamentoId;
             pedidoNoBanco.Observacao = dto.Observacao?.Trim() ?? string.Empty;
 
-            pedidoNoBanco.Endereco.Rua = dto.Endereco.Rua.Trim();
-            pedidoNoBanco.Endereco.Numero = dto.Endereco.Numero.Trim();
-            pedidoNoBanco.Endereco.CidadeId = dto.Endereco.Cidade;
-            pedidoNoBanco.Endereco.Bairro = dto.Endereco.Bairro.Trim();
-            pedidoNoBanco.Endereco.UfId = dto.Endereco.Uf;
-            pedidoNoBanco.Endereco.Cep = dto.Endereco.Cep.Trim();
-            pedidoNoBanco.Endereco.Complemento = string.IsNullOrWhiteSpace(dto.Endereco.Complemento)
+            endereco.Rua = dto.Endereco.Rua.Trim();
+            endereco.Numero = dto.Endereco.Numero.Trim();
+            endereco.CidadeId = dto.Endereco.Cidade;
+            endereco.Bairro = dto.Endereco.Bairro.Trim();
+            endereco.UfId = dto.Endereco.Uf;
+            endereco.Cep = dto.Endereco.Cep.Trim();
+            endereco.TipoId = 1;
+            endereco.Complemento = string.IsNullOrWhiteSpace(dto.Endereco.Complemento)
                 ? null
                 : dto.Endereco.Complemento.Trim();
 
@@ -61,7 +72,6 @@ namespace comaagora.Repositories
                     }
                 }
             }
-
             return await _context.SaveChangesAsync() > 0;
         }
 
@@ -78,6 +88,44 @@ namespace comaagora.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        public async Task<Produto?> GetProdutoDoEstabelecimentoByIdAsync(int id, int estabelecimentoId)
+        {
+            return await _context.Produtos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id && p.EstabelecimentoId == estabelecimentoId);
+        }
+
+        public async Task<bool> MetodoPagamentoValidoAsync(int metodoPagamentoId, int estabelecimentoId)
+        {
+            return await _context.MetodoPagamento
+                .AsNoTracking()
+                .AnyAsync(mp =>
+                    mp.Id == metodoPagamentoId &&
+                    mp.EstabelecimentoId == estabelecimentoId &&
+                    mp.Ativo);
+        }
+
+        public async Task<int?> GetStatusInicialPedidoIdAsync(int estabelecimentoId)
+        {
+            var statusPendenteId = await _context.PedidoStatus
+                .AsNoTracking()
+                .Where(ps => ps.EstabelecimentoId == estabelecimentoId && ps.Nome.ToLower() == "pendente")
+                .Select(ps => (int?)ps.Id)
+                .FirstOrDefaultAsync();
+
+            if (statusPendenteId.HasValue)
+            {
+                return statusPendenteId.Value;
+            }
+
+            return await _context.PedidoStatus
+                .AsNoTracking()
+                .Where(ps => ps.EstabelecimentoId == estabelecimentoId)
+                .OrderBy(ps => ps.Id)
+                .Select(ps => (int?)ps.Id)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<Pedido?> GetPedidoCompletoByIdAsync(int pedidoId)
         {
             return await BuildPedidoQuery()
@@ -87,7 +135,7 @@ namespace comaagora.Repositories
         public async Task<List<Pedido>> GetPedidosByClientKeyAsync(string clientKey, string slug)
         {
             return await BuildPedidoQuery()
-                .Where(p => p.Usuario.ClientKey == clientKey && p.Estabelecimento.Slug == slug)
+                .Where(p => p.ClientKey == clientKey && p.Estabelecimento.Slug == slug)
                 .OrderByDescending(p => p.Id)
                 .ToListAsync();
         }
@@ -114,15 +162,19 @@ namespace comaagora.Repositories
                 .ToListAsync();
         }
 
+        public async Task<bool> ClientKeyExistsAsync(string clientKey)
+        {
+            return await _context.Pedidos
+                .AsNoTracking()
+                .AnyAsync(p => p.ClientKey == clientKey);
+        }
+
         private IQueryable<Pedido> BuildPedidoQuery()
         {
             return _context.Pedidos
                 .AsNoTracking()
                 .Include(p => p.PedidoStatus)
-                .Include(p => p.Endereco)
-                .Include(p => p.Usuario)
                 .Include(p => p.Estabelecimento)
-                    .ThenInclude(e => e.Endereco)
                 .Include(p => p.Estabelecimento)
                     .ThenInclude(e => e.EstabelecimentoStatus)
                 .Include(p => p.ProdutoPedidos)

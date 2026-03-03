@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace comaagora.Models;
 
@@ -35,7 +36,6 @@ public partial class Estabelecimento
 
     public virtual ICollection<EstabelecimentoCategorium> EstabelecimentoCategoria { get; set; } = new List<EstabelecimentoCategorium>();
 
-    public virtual Endereco Endereco { get; set; } = null!;
 
     public virtual EstabelecimentoStatus EstabelecimentoStatus { get; set; } = null!;
 
@@ -60,6 +60,4 @@ public partial class Estabelecimento
     public virtual Tenant Tenant { get; set; } = null!;
 
     public virtual ICollection<UnidadeMedidum> UnidadeMedida { get; set; } = new List<UnidadeMedidum>();
-
-    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

@@ -13,10 +13,10 @@ namespace comaagora.DTO
         public string Telefone { get; set; } = string.Empty;
     }
 
-    public class GetUsuarioDTO
-    {
-        public string Nome { get; set; } = string.Empty;
-        public string Telefone { get; set; } = string.Empty;
-        public string ClientKey { get; set; } = string.Empty;
-    }
+    //public class GetUsuarioDTO
+    //{
+    //    public string Nome { get; set; } = string.Empty;
+    //    public string Telefone { get; set; } = string.Empty;
+    //    public string ClientKey { get; set; } = string.Empty;
+    //}
 }

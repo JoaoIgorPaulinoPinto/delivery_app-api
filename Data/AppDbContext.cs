@@ -17,7 +17,6 @@ namespace comaagora.Data
         public DbSet<EstabelecimentoCategoria> EstabelecimentoCategoria { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<ProdutoPedido> ProdutoPedidos { get; set; }
-        public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }
         public DbSet<MetodoPagamento> MetodoPagamento { get; set; }
         public DbSet<PedidoStatus> PedidoStatus { get; set; }
@@ -26,11 +25,6 @@ namespace comaagora.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Estabelecimento>()
-                .HasOne(e => e.Endereco)
-                .WithMany(e => e.Estabelecimentos)
-                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Endereco>()
                 .HasOne(e => e.Cidade)
@@ -50,29 +44,16 @@ namespace comaagora.Data
                 .HasForeignKey(e => e.TipoId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Usuario>()
-                .HasOne(u => u.Endereco)
-                .WithMany(e => e.Usuarios)
-                .HasForeignKey(u => u.EnderecoId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Pedido>()
-                .HasOne(p => p.Usuario)
-                .WithMany(u => u.Pedidos)
-                .HasForeignKey(p => p.UsuarioId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Pedido>()
-                .HasOne(p => p.Endereco)
-                .WithOne(e => e.Pedido)
-                .HasForeignKey<Pedido>(p => p.EnderecoId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Pedido>()
                 .HasOne(p => p.MetodoPagamento)
                 .WithMany(mp => mp.Pedidos)
                 .HasForeignKey(p => p.MetodoPagamentoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TipoEndereco>()
+                        .Property(t => t.Id)
+                        .ValueGeneratedNever(); 
         }
     }
 }

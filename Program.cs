@@ -7,7 +7,6 @@ using comaagora.Services.MetodoPagamento;
 using comaagora.Services.Pedido;
 using comaagora.Services.Produto;
 using comaagora.Services.ProdutoPedido;
-using comaagora.Services.Usuario;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,7 +29,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IEnderecoService, EnderecoService>();
 builder.Services.AddScoped<IProdutoPedidoService, ProdutoPedidoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
@@ -39,12 +37,12 @@ builder.Services.AddScoped<IEstabelecimentoService, EstabelecimentoService>();
 builder.Services.AddScoped<IMetodoPagamentoService, MetodoPagamentoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
-builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<PedidoRepository>();
 builder.Services.AddScoped<MetodoPagamentoRepository>();
 builder.Services.AddScoped<CategoriaRepository>();
 builder.Services.AddScoped<EstabelecimentoRepository>();
 builder.Services.AddScoped<ProdutoRepository>();
+builder.Services.AddScoped<EnderecoRepository>();
 
 var app = builder.Build();
 

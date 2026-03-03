@@ -19,12 +19,11 @@ namespace comaagora.Services.ProdutoPedido
 
             foreach (var item in itens)
             {
-                var produto = await _pedidoRepo.GetProdutoByIdAsync(item.ProdutoId)
-                    ?? throw new KeyNotFoundException($"Produto {item.ProdutoId} nao encontrado.");
+                var produto = await _pedidoRepo.GetProdutoDoEstabelecimentoByIdAsync(item.ProdutoId, estabelecimentoId)
+                    ?? throw new KeyNotFoundException($"Produto {item.ProdutoId} nao encontrado para este estabelecimento.");
 
                 lista.Add(new Models.ProdutoPedido
                 {
-                    Produto = produto,
                     ProdutoId = produto.Id,
                     Quantidade = item.Quantidade,
                     EstabelecimentoId = estabelecimentoId,

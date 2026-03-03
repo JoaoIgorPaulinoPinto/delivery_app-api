@@ -75,7 +75,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("UfId");
 
-                    b.ToTable("Enderecos");
+                    b.ToTable("Enderecos", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.Estabelecimento", b =>
@@ -143,7 +143,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("Estabelecimentos");
+                    b.ToTable("Estabelecimentos", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.EstabelecimentoCategoria", b =>
@@ -183,7 +183,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("EstabelecimentoCategoria");
+                    b.ToTable("EstabelecimentoCategoria", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.EstabelecimentoCategorium", b =>
@@ -216,7 +216,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("EstabelecimentoCategorium");
+                    b.ToTable("EstabelecimentoCategorium", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.EstabelecimentoStatus", b =>
@@ -243,7 +243,7 @@ namespace comaagora.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EstabelecimentoStatus");
+                    b.ToTable("EstabelecimentoStatus", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.Estado", b =>
@@ -270,7 +270,7 @@ namespace comaagora.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Estado");
+                    b.ToTable("Estado", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.HorarioFuncionamento", b =>
@@ -304,7 +304,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("EstabelecimentoId");
 
-                    b.ToTable("HorarioFuncionamento");
+                    b.ToTable("HorarioFuncionamento", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.MetodoPagamento", b =>
@@ -339,7 +339,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("EstabelecimentoId");
 
-                    b.ToTable("MetodoPagamento");
+                    b.ToTable("MetodoPagamento", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.Municipio", b =>
@@ -363,7 +363,7 @@ namespace comaagora.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Municipio");
+                    b.ToTable("Municipio", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.Pedido", b =>
@@ -378,9 +378,6 @@ namespace comaagora.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("EnderecoId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("EnderecoId1")
                         .HasColumnType("int");
 
                     b.Property<int>("EstabelecimentoId")
@@ -407,9 +404,6 @@ namespace comaagora.Migrations
                     b.HasIndex("EnderecoId")
                         .IsUnique();
 
-                    b.HasIndex("EnderecoId1")
-                        .IsUnique();
-
                     b.HasIndex("EstabelecimentoId");
 
                     b.HasIndex("MetodoPagamentoId");
@@ -418,7 +412,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Pedidos");
+                    b.ToTable("Pedidos", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.PedidoStatus", b =>
@@ -451,7 +445,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("PedidoStatus");
+                    b.ToTable("PedidoStatus", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.Produto", b =>
@@ -503,7 +497,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("ProdutoStatusId");
 
-                    b.ToTable("Produtos");
+                    b.ToTable("Produtos", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.ProdutoCategoria", b =>
@@ -536,7 +530,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("ProdutoCategorias");
+                    b.ToTable("ProdutoCategorias", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.ProdutoPedido", b =>
@@ -579,7 +573,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("ProdutoId");
 
-                    b.ToTable("ProdutoPedidos");
+                    b.ToTable("ProdutoPedidos", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.ProdutoStatus", b =>
@@ -612,7 +606,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("ProdutoStatus");
+                    b.ToTable("ProdutoStatus", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.Status", b =>
@@ -644,7 +638,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("EstabelecimentoId");
 
-                    b.ToTable("Status");
+                    b.ToTable("Status", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.Tenant", b =>
@@ -680,7 +674,7 @@ namespace comaagora.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tenant");
+                    b.ToTable("Tenant", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.TipoEndereco", b =>
@@ -700,7 +694,7 @@ namespace comaagora.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TipoEndereco");
+                    b.ToTable("TipoEndereco", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.Usuario", b =>
@@ -741,7 +735,7 @@ namespace comaagora.Migrations
 
                     b.HasIndex("EstabelecimentoId");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("comaagora.Models.Endereco", b =>
@@ -861,14 +855,10 @@ namespace comaagora.Migrations
             modelBuilder.Entity("comaagora.Models.Pedido", b =>
                 {
                     b.HasOne("comaagora.Models.Endereco", "Endereco")
-                        .WithOne()
+                        .WithOne("Pedido")
                         .HasForeignKey("comaagora.Models.Pedido", "EnderecoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("comaagora.Models.Endereco", null)
-                        .WithOne("Pedido")
-                        .HasForeignKey("comaagora.Models.Pedido", "EnderecoId1");
 
                     b.HasOne("comaagora.Models.Estabelecimento", "Estabelecimento")
                         .WithMany("Pedidos")
