@@ -3,6 +3,7 @@ using comaagora.Repositories;
 using comaagora.Services.Categoria;
 using comaagora.Services.Endereco;
 using comaagora.Services.Estabelecimento;
+using comaagora.Services.Localizacao;
 using comaagora.Services.MetodoPagamento;
 using comaagora.Services.Pedido;
 using comaagora.Services.Produto;
@@ -36,6 +37,7 @@ builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<IEstabelecimentoService, EstabelecimentoService>();
 builder.Services.AddScoped<IMetodoPagamentoService, MetodoPagamentoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<ILocalizacaoService, LocalizacaoService>();
 
 builder.Services.AddScoped<PedidoRepository>();
 builder.Services.AddScoped<MetodoPagamentoRepository>();
@@ -43,6 +45,7 @@ builder.Services.AddScoped<CategoriaRepository>();
 builder.Services.AddScoped<EstabelecimentoRepository>();
 builder.Services.AddScoped<ProdutoRepository>();
 builder.Services.AddScoped<EnderecoRepository>();
+builder.Services.AddScoped<LocalizacaoRepository>();
 
 var app = builder.Build();
 
