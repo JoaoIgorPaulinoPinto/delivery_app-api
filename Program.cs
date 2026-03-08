@@ -13,19 +13,22 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// --- CONFIGURAÇÃO DE PORTA PARA O RENDER ---
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// --- BANCO DE PADADOS ---
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var conn = builder.Configuration.GetConnectionString("DefaultConnection");
     options.UseMySql(conn, ServerVersion.AutoDetect(conn));
 });
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
-
+// --- DEPENDÊNCIAS (SERVICES) ---
 builder.Services.AddScoped<IEnderecoService, EnderecoService>();
 builder.Services.AddScoped<IProdutoPedidoService, ProdutoPedidoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
@@ -35,6 +38,7 @@ builder.Services.AddScoped<IMetodoPagamentoService, MetodoPagamentoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<ILocalizacaoService, LocalizacaoService>();
 
+// --- DEPENDÊNCIAS (REPOSITORIES) ---
 builder.Services.AddScoped<PedidoRepository>();
 builder.Services.AddScoped<MetodoPagamentoRepository>();
 builder.Services.AddScoped<CategoriaRepository>();
@@ -45,20 +49,28 @@ builder.Services.AddScoped<LocalizacaoRepository>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+// --- PIPELINE DE REQUISIÇÕES (MIDDLEWARES) ---
+
+// Swagger habilitado para todos os ambientes no Render para facilitar testes
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ComaAgora API v1");
+    // Se quiser que o Swagger seja a página inicial, deixe a RoutePrefix vazia:
+    // c.RoutePrefix = string.Empty; 
+});
+
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
-app.UseSwagger();
-app.UseSwaggerUI();
-app.UseHttpsRedirection();
+
+// IMPORTANTE: UseHttpsRedirection é desativado no Render pois o Proxy deles já cuida disso.
+// app.UseHttpsRedirection(); 
+
 app.MapControllers();
 
-app.MapGet("/", () => "Hello World!");
+// Rota raiz para confirmar que a API está de pé
+app.MapGet("/", () => "ComaAgora API está online e rodando!");
 
 app.Run();
