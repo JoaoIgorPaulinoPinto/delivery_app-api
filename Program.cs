@@ -57,7 +57,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
 app.MapControllers();
+
+app.MapGet("/", () => "Hello World!");
 
 app.Run();
