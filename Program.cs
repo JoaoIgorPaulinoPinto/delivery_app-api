@@ -13,10 +13,18 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- CONFIGURAÇÃO DE PORTA PARA O RENDER ---
+// --- CONFIGURAÃ‡ÃƒO DE PORTA PARA O RENDER ---
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowVercelApp", policy =>
+    {
+        policy.WithOrigins("https://delivery-g4ifrns40-joao-igor-paulino-pintos-projects.vercel.app")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -28,7 +36,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(conn, ServerVersion.AutoDetect(conn));
 });
 
-// --- DEPENDÊNCIAS (SERVICES) ---
+// --- DEPENDÃŠNCIAS (SERVICES) ---
 builder.Services.AddScoped<IEnderecoService, EnderecoService>();
 builder.Services.AddScoped<IProdutoPedidoService, ProdutoPedidoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
@@ -38,7 +46,7 @@ builder.Services.AddScoped<IMetodoPagamentoService, MetodoPagamentoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<ILocalizacaoService, LocalizacaoService>();
 
-// --- DEPENDÊNCIAS (REPOSITORIES) ---
+// --- DEPENDÃŠNCIAS (REPOSITORIES) ---
 builder.Services.AddScoped<PedidoRepository>();
 builder.Services.AddScoped<MetodoPagamentoRepository>();
 builder.Services.AddScoped<CategoriaRepository>();
@@ -49,28 +57,28 @@ builder.Services.AddScoped<LocalizacaoRepository>();
 
 var app = builder.Build();
 
-// --- PIPELINE DE REQUISIÇÕES (MIDDLEWARES) ---
+// --- PIPELINE DE REQUISIÃ‡Ã•ES (MIDDLEWARES) ---
 
 // Swagger habilitado para todos os ambientes no Render para facilitar testes
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "ComaAgora API v1");
-    // Se quiser que o Swagger seja a página inicial, deixe a RoutePrefix vazia:
+    // Se quiser que o Swagger seja a pÃ¡gina inicial, deixe a RoutePrefix vazia:
     // c.RoutePrefix = string.Empty; 
 });
-
+app.UseCors("AllowVercelApp");
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
 
-// IMPORTANTE: UseHttpsRedirection é desativado no Render pois o Proxy deles já cuida disso.
+// IMPORTANTE: UseHttpsRedirection Ã© desativado no Render pois o Proxy deles jÃ¡ cuida disso.
 // app.UseHttpsRedirection(); 
 
 app.MapControllers();
 
-// Rota raiz para confirmar que a API está de pé
-app.MapGet("/", () => "ComaAgora API está online e rodando!");
+// Rota raiz para confirmar que a API estÃ¡ de pÃ©
+app.MapGet("/", () => "ComaAgora API estÃ¡ online e rodando!");
 
 app.Run();
