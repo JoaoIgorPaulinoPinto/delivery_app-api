@@ -18,11 +18,11 @@ var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowVercelApp", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("https://delivery-g4ifrns40-joao-igor-paulino-pintos-projects.vercel.app")
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        policy.AllowAnyOrigin()   // Permite qualquer domínio
+              .AllowAnyMethod()   // Permite GET, POST, PUT, DELETE, etc.
+              .AllowAnyHeader();  // Permite qualquer cabeçalho (Content-Type, Authorization, etc.)
     });
 });
 builder.Services.AddControllers();
@@ -67,7 +67,7 @@ app.UseSwaggerUI(c =>
     // Se quiser que o Swagger seja a página inicial, deixe a RoutePrefix vazia:
     // c.RoutePrefix = string.Empty; 
 });
-app.UseCors("AllowVercelApp");
+app.UseCors("AllowAll");
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
