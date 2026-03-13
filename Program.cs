@@ -21,13 +21,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// --- BANCO DE PADADOS ---
+// --- BANCO DE DADADOS ---
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var conn = builder.Configuration.GetConnectionString("DefaultConnection");
     options.UseMySql(conn, ServerVersion.AutoDetect(conn));
 });
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 // --- DEPENDÊNCIAS (SERVICES) ---
 builder.Services.AddScoped<IEnderecoService, EnderecoService>();
 builder.Services.AddScoped<IProdutoPedidoService, ProdutoPedidoService>();
@@ -48,16 +56,12 @@ builder.Services.AddScoped<EnderecoRepository>();
 builder.Services.AddScoped<LocalizacaoRepository>();
 
 var app = builder.Build();
+app.UseCors("AllowAll");
 
-// --- PIPELINE DE REQUISIÇÕES (MIDDLEWARES) ---
-
-// Swagger habilitado para todos os ambientes no Render para facilitar testes
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "ComaAgora API v1");
-    // Se quiser que o Swagger seja a página inicial, deixe a RoutePrefix vazia:
-    // c.RoutePrefix = string.Empty; 
 });
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -65,12 +69,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
 
-// IMPORTANTE: UseHttpsRedirection é desativado no Render pois o Proxy deles já cuida disso.
-// app.UseHttpsRedirection(); 
-
 app.MapControllers();
 
-// Rota raiz para confirmar que a API está de pé
 app.MapGet("/", () => "ComaAgora API está online e rodando!");
 
 app.Run();
