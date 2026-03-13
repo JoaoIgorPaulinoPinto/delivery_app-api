@@ -13,15 +13,21 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- CONFIGURA«√O DE PORTA PARA O RENDER ---
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()   // Permite qualquer dom√≠nio
+              .AllowAnyMethod()   // Permite GET, POST, PUT, DELETE, etc.
+              .AllowAnyHeader();  // Permite qualquer cabe√ßalho (Content-Type, Authorization, etc.)
+    });
+});
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// --- BANCO DE DADADOS ---
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var conn = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -36,7 +42,6 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
-// --- DEPEND NCIAS (SERVICES) ---
 builder.Services.AddScoped<IEnderecoService, EnderecoService>();
 builder.Services.AddScoped<IProdutoPedidoService, ProdutoPedidoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
@@ -46,7 +51,6 @@ builder.Services.AddScoped<IMetodoPagamentoService, MetodoPagamentoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<ILocalizacaoService, LocalizacaoService>();
 
-// --- DEPEND NCIAS (REPOSITORIES) ---
 builder.Services.AddScoped<PedidoRepository>();
 builder.Services.AddScoped<MetodoPagamentoRepository>();
 builder.Services.AddScoped<CategoriaRepository>();
@@ -63,14 +67,10 @@ app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "ComaAgora API v1");
 });
-
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
-
 app.MapControllers();
-
 app.MapGet("/", () => "ComaAgora API est· online e rodando!");
-
 app.Run();
